@@ -1,4 +1,5 @@
 import re
+import sys
 import time
 from bson import ObjectId
 import inflect
@@ -10,6 +11,13 @@ from pymongo import MongoClient
 
 # Make an inflection engine.
 eng = inflect.engine()
+
+
+def add_parent_id(parent_class, doc, parent_instance):
+    '''Extracts parent ID and adds it to document.'''
+    key = '_{:s}_id'.format(parent_class)
+    doc[key] = parent_instance._id
+    return doc
 
 
 def plural(noun):
@@ -76,3 +84,57 @@ def serialize(obj, key=None):
             return obj
         if isinstance(obj, np.generic):
             return np.asscalar(obj)
+
+
+def name_to_id(name):
+    '''Convert resource name to foreign key id.'''
+    return '_{:s}_id'.format(name)
+
+
+def name_to_class(class_name, registered_classes):
+    '''Returns an instance of a class given its name.'''
+    for cls in registered_classes:
+        if cls._name() == class_name:
+            return cls
+    raise ValueError('Specified class does not exist.')
+
+
+def add_children_to_parent(parent_instance, child_collection_name, database,\
+        registered_classes):
+    '''Add a helper method to the parent instance that allows access to
+       its children.'''
+    child_collection = ChildCollection(parent_instance, child_collection_name,\
+            database, registered_classes)
+    parent_instance.__dict__[child_collection_name] = child_collection
+    return parent_instance
+
+
+def add_parent_to_child(ParentClass, child_instance, database):
+    '''Attaches the parent to to a child in has_many relationship.'''
+    foreign_key = name_to_id(ParentClass._name())
+    parent_instance = ParentClass.find_by_id(child_instance.\
+            __dict__[foreign_key])
+    child_instance.__dict__[parent_instance._model_name] = parent_instance
+
+
+class ChildCollection(object):
+
+    def __init__(self, parent_instance, child_collection_name, database,\
+            registered_classes):
+        '''Create a helper class for holding on to has_many children.'''
+        self._db = database
+        self.parent_instance = parent_instance
+        self._collection_name = child_collection_name
+        self._collection = self._db[child_collection_name]
+        self.registered_classes = registered_classes
+
+    def __call__(self):
+        '''Returns a generator point to the list of children.'''
+        ChildClass = name_to_class(singular(self._collection_name),\
+                self.registered_classes)
+        query = {'_{:s}_id'.format(self.parent_instance._model_name):\
+                    self.parent_instance._id}
+        # WOW is this code below super inefficient; FIX later.
+        return [ChildClass.find_by_id(doc['_id']) for\
+                doc in self._collection.find(query)]
+

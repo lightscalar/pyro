@@ -119,3 +119,21 @@ def update_test():
     updated_worker = Worker.find_by_id(worker._id)
     assert_equals(updated_worker.age, 41)
 
+
+def has_many_test():
+    class Author(Model): pass
+    class Book(Model): pass
+    Author.delete_all()
+    Book.delete_all()
+    Author.has_many(Book)
+    shakespeare = Author.create({'name': 'William Shakespeare'})
+    hamlet = Book.create({'title': 'Hamlet', 'length': 145}, shakespeare)
+    macbeth = Book.create({'title': 'Macbeth', 'length': 125}, shakespeare)
+    assert_equals(Author.count(), 1)
+    assert_equals(Book.count(), 2)
+    assert_equals(macbeth.author.name, 'William Shakespeare')
+    assert_equals(len(shakespeare.books()), 2)
+    assert_equals(list(shakespeare.books())[0].title, 'Hamlet')
+
+
+
