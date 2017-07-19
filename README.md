@@ -1,4 +1,4 @@
-# PYRO — A Lightweight Framework for Developing Quick Web APIs in Flask
+# PYRO — A Lightweight Framework for Quickly Developing Web APIs in Flask
 
 ## Introduction
 
