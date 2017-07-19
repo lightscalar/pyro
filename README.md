@@ -87,7 +87,7 @@ User.count() # 1
 Alternatively, we can do this all in one fell-swoop with the `create` method:
 
 ```python
-user = User.create(user_data)   # this guy is instantiated and saved to DB
+user = User.create(user_data)   # this guy is instantiated AND saved to DB
 ```
 
 So far, so good. Once we've saved the user to the database, we'll find a new
