@@ -38,7 +38,7 @@ db = connect_to_database(database_name='my_database')
 User.set_db(db)
 ```
 
-Now let's create a `User` instance. We can do this by calling the `.new()` 
+Now let's create a `User` instance. We can do this by calling the `new` 
 method on the `User` class:
 
 ```python
@@ -61,7 +61,7 @@ anticipates the interfacing of this elegant python code to an ugly JavaScript
 front-end, where camelCase is *de rigueur*.
 
 It is important to note that this user has not yet been saved to the database.
-To do that, we need to `.save()` the object, like this,
+To do that, we need to `save` the object, like this,
 
 ```python
 user.save() # -> Saves it to the specified MongoDB
@@ -74,10 +74,10 @@ We can see how many users are in the database by looking at the *class* method
 User.count() # 1
 ```
 
-Alternatively, we can do this all in one fell-swoop with the `.create` method:
+Alternatively, we can do this all in one fell-swoop with the `create` method:
 
 ```python
-user = User.create(user_data)   # this guy is instantiated and save to DB
+user = User.create(user_data)   # this guy is instantiated and saved to DB
 ```
 
 So far, so good. Once we've saved the user to the database, we'll find a new
