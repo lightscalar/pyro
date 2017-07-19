@@ -20,7 +20,7 @@ class Model(object):
         return cls._db[cls._collection_name()].find()
 
     @classmethod
-    def create(cls, doc):
+    def create(cls, doc, *args):
         '''Creates & saves a new object to the database.'''
         obj = cls.new(doc)
         obj = obj.save()
@@ -37,6 +37,11 @@ class Model(object):
             return True
         except:
             raise IOError('Problem deleting records from database.')
+
+    @classmethod
+    def has_many(cls, child_class):
+        '''Specify a child class.'''
+
 
     @classmethod
     def _name(cls):

@@ -149,8 +149,19 @@ class BlogPost(Model):
 
 User.has_many(BlogPost)
 
-user = User.create({'name': 'William Shakespeare'})
-blog_post = BlogPost.create({'name': 'Hamlet'}, user)
+user = User.create({'fullName': 'William Shakespeare'})
+blog_post_one = BlogPost.create({'title': 'Hamlet'}, user)
+blog_post_two = BlogPost.create({'title': 'Macbeth'}, user)
 ```
 
+By declaring `User.has_many(BlogPost)` we require that a user instance be
+passed into the `new` or `create` method when we are creating a `BlogPost`.
+That declaration sets into motion a bunch of machinery, however, that let's us
+access related objects just as you'd expect:
 
+```python
+blog_post_one.user  # returns the parent user object!
+user.blog_posts     # yields a list of blog posts! 
+```
+
+Here our prolific blogger has produced two blog posts. 
