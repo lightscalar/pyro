@@ -67,8 +67,13 @@ To do that, we need to `save` the object, like this,
 user.save() # -> Saves it to the specified MongoDB
 ```
 
-We can see how many users are in the database by looking at the *class* method
-`.count()`:
+The user is now safely saved in a document in the `users` collection of the
+MongoDB database. By convention, the collection name is the plural of the name
+of the class name. So the `User` class is saved in the `users` collection; the
+`Box` class is saved in the `boxes` collection, and so on. 
+
+We can see how many users are in the database by looking at
+the *class* method `.count()`:
 
 ```python
 User.count() # 1
