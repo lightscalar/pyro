@@ -57,7 +57,24 @@ user.last_name  # Lewis
 user.age        # 28
 ```
 
-And are back to normal here?
+Note that, although our dictionary used camelCase for attribute names, once
+we've ingested dictionary, everything is converted to snake_case. This
+anticipates the interfacing of this code with a JavaScript front-end, where
+camelCase dominates.
 
+It is important to note that this user has not been saved to the databae. To
+do that, we need to `.save()` the object, like this,
 
+```python
+user.save() # -> Saves it to the specified MongoDB
+```
+
+We can see how many users are in the database by looking at the *class* method
+`.count`:
+
+```python
+User.count() # 1
+```
+
+So far, so good.
 
