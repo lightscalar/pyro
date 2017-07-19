@@ -19,7 +19,7 @@ available [here](https://goo.gl/pbiPSB).
 ### Fundamentals
 
 The `Model` class is at the core of `pyro`. It provides all the
-Create/Read/Update/Delete functionality that you might need, and more. 
+Create/Read/Update/Delete functionality that you might need, and more.
 
 Before we start modeling our data, however, we need to make contact with a
 database. We assume you have a MongoDB server running somewhere. If that is not
@@ -138,9 +138,9 @@ user.save()     # saved to database
 
 We frequently store data objects that are somehow related to one another, and
 we may want to preserve this relationship in our database. A user produces many
-blog posts, a company has many employees, and so on. 
+blog posts, a company has many employees, and so on.
 
-We can explicitly model this relationship in our database using the `Model's`
+We can explicitly model this relationship in our database using the `Model`'s
 association helper methods.
 
 ```python
@@ -164,7 +164,7 @@ access related objects just as you'd expect:
 
 ```python
 blog_post_one.user      # returns the parent user object!
-user.blog_posts()       # returns a list of blog posts! 
+user.blog_posts()       # returns a list of blog posts!
 ```
 
 The associated blog posts are available by calling the `blog_posts` method
@@ -187,5 +187,5 @@ across an http connection. We can call the `serialize_doc` method to grab a
 
 # API Application
 
-Okay, so we've got our data modeled. Now how do we create an API from these 
+Okay, so we've got our data modeled. Now how do we create an API from these
 `Model` classes? We create a `pyro` `Application`.
