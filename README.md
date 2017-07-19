@@ -32,8 +32,8 @@ class User(Model):
 
 Now you have a `User` class. Before we do anything else, however, we'll need to
 connect a database. We assume you have a MongoDB server running somewhere. If
-that is not the case, get [MongoDB](https://goo.gl/pbiPSB) installed and 
-running on your system. Then, create a database object and attach it to the 
+that is not the case, get [MongoDB](https://goo.gl/pbiPSB) installed and
+running on your system. Then, create a database object and attach it to the
 `User` class like this:
 
 ```python
@@ -43,7 +43,7 @@ db = connect_to_database(database_name='my_database')
 User.set_db(db)
 ```
 
-Now let's create a `User` instance. We can do this by calling the `new` 
+Now let's create a `User` instance. We can do this by calling the `new`
 method on the `User` class:
 
 ```python
@@ -75,7 +75,7 @@ user.save() # -> Saves it to the specified MongoDB
 The user is now safely saved in a document in the `users` collection of the
 MongoDB database. By convention, the collection name is the plural of the name
 of the class name. So the `User` class is saved in the `users` collection; the
-`Box` class is saved in the `boxes` collection, and so on. 
+`Box` class is saved in the `boxes` collection, and so on.
 
 We can see how many users are in the database by looking at
 the *class* method `.count()`:
@@ -94,10 +94,10 @@ So far, so good. Once we've saved the user to the database, we'll find a new
 property on our object, `_id`:
 
 ```python
-user._id # ObjectId('596e99c7378acd2ea8357ea4') 
+user._id # ObjectId('596e99c7378acd2ea8357ea4')
 ```
 
-This is the unique `_id` that is used internally by MongoDB to identify 
+This is the unique `_id` that is used internally by MongoDB to identify
 individual documents. If we have this `_id`, we can load a document from the
 database like this:
 
@@ -105,7 +105,7 @@ database like this:
 user = User.find_by_id(_id)
 ```
 
-And if we've made a mistake in letting this user into our system, well then, 
+And if we've made a mistake in letting this user into our system, well then,
 we have access to the `delete` method on the user object:
 
 ```python
@@ -123,7 +123,7 @@ User.delete_all()  # well, there goes our user base
 Since we live in an imperfect world in a Universe hurtling towards its
 inevitable heat death, it may be the case that we've made a mistake and the
 user instance needs updating. In that case, we can update the attributes on the
-user instance, and then call the `update` method:
+user instance, and then call its `update` method:
 
 ```python
 user = User.find_by_id(_id)
