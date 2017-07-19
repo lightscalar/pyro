@@ -78,7 +78,7 @@ of the class name. So the `User` class is saved in the `users` collection; the
 `Box` class is saved in the `boxes` collection, and so on.
 
 We can see how many users are in the database by looking at
-the *class* method `.count()`:
+the *class* method `count`:
 
 ```python
 User.count() # 1
