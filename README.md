@@ -46,8 +46,8 @@ user_data = {'firstName': 'Matthew', 'lastName': Lewis, 'age': 28}
 user = User.new(user_data)
 ```
 
-Note that the attributes in that dictionary have been assigned as properties
-on the `user` instance. That is,
+Attributes in that dictionary have now been assigned as properties on the
+`user` instance. That is,
 
 ```python
 user.first_name # Matthew
@@ -57,11 +57,11 @@ user.age        # 28
 
 Note that, although our dictionary used camelCase for attribute names, once
 we've ingested the dictionary, everything is converted to snake_case. This
-anticipates the interfacing of this code with a JavaScript front-end, where
-camelCase is *de rigueur*.
+anticipates the interfacing of this elegant python code to an ugly JavaScript
+front-end, where camelCase is *de rigueur*.
 
-It is important to note that this user has not been saved to the databae. To
-do that, we need to `.save()` the object, like this,
+It is important to note that this user has not yet been saved to the databae.
+To do that, we need to `.save()` the object, like this,
 
 ```python
 user.save() # -> Saves it to the specified MongoDB
@@ -74,8 +74,14 @@ We can see how many users are in the database by looking at the *class* method
 User.count() # 1
 ```
 
-So far, so good. Once we've saved the user to the database, we find that a 
-new property on our object, `_id`:
+Alternatively, we can do this all in one fell-swoop with the `.create` method:
+
+```python
+user = User.create(user_data)   # this guy is instantiated and save to DB
+```
+
+So far, so good. Once we've saved the user to the database, we'll find a new
+property on our object, `_id`:
 
 ```python
 user._id # ObjectId('596e99c7378acd2ea8357ea4') 
