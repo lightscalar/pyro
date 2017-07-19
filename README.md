@@ -60,7 +60,7 @@ we've ingested the dictionary, everything is converted to snake_case. This
 anticipates the interfacing of this elegant python code to an ugly JavaScript
 front-end, where camelCase is *de rigueur*.
 
-It is important to note that this user has not yet been saved to the databae.
+It is important to note that this user has not yet been saved to the database.
 To do that, we need to `.save()` the object, like this,
 
 ```python
@@ -102,9 +102,10 @@ we have access to the `delete` method on the user object:
 user.delete() # goodbye cruel world
 ```
 
-This deletes it from the MongoDB. If we're feeling particularly misanthropic,
-we can destroy all the users at once by calling `delete_all()`:
+This deletes that particular user from the MongoDB. If we're feeling
+particularly misanthropic, however, we can destroy all the users at once by
+calling `delete_all()`:
 
 ```python
-Users.delete_all()  # well, there goes our user base
+User.delete_all()  # well, there goes our user base
 ```
