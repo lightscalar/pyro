@@ -175,3 +175,17 @@ converting it to snake case and rendering it plural. At the moment, only
 A given data model can have many has_many relationships, but a model can only
 belong to one other model; in order words, many to many relationships are not
 (yet) possible.
+
+
+### Serializing/Deserializing
+
+Since we anticipate using these model objects as part of a Web API of some
+sort, we may eventually want to translate these objects to JSON for transport
+across an http connection. We can call the `serialize_doc` method to grab a
+`dict` containing all of our data.
+
+
+# API Application
+
+Okay, so we've got our data modeled. Now how do we create an API from these 
+`Model` classes? We create a `pyro` `Application`.
