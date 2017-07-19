@@ -1,8 +1,6 @@
 from ipdb import set_trace as debug
-
 from pyro.database import *
 from pyro.utils import *
-
 
 
 class Model(object):

@@ -29,7 +29,6 @@ def model_name_test():
 
 def db_name_config_test():
     class Widget(Model): pass
-    Widget.set_db(db)
     assert_equals(Widget._db.name, 'mjl')
 
 
@@ -56,7 +55,6 @@ def new_widget_test():
 
 def create_widget_test():
     class Widget(Model): pass
-    Widget.set_db(db)
     data = {'name': 'My Widget', 'age': 43, 'feet': False}
     widget = Widget.create(data)
     assert_equals(Widget.count(), 1)
@@ -67,7 +65,6 @@ def create_widget_test():
 
 def delete_widget_test():
     class Widget(Model): pass
-    Widget.set_db(db)
     data = {'name': 'My Widget', 'age': 43, 'feet': False}
     widget = Widget.create(data)
     assert_equals(Widget.count(), 1)
@@ -77,7 +74,6 @@ def delete_widget_test():
 
 def find_by_id_test():
     class Worker(Model): pass
-    Worker.set_db(db)
     data = {'firstName': 'Matthew', 'lastName': 'Lewis'}
     worker = Worker.create(data)
     _id = worker._id
@@ -88,7 +84,6 @@ def find_by_id_test():
 
 def delete_all_test():
     class Worker(Model): pass
-    Worker.set_db(db)
     data = {'firstName': 'Matthew', 'lastName': 'Lewis'}
     worker = Worker.create(data)
     worker = Worker.create(data)
@@ -100,7 +95,6 @@ def delete_all_test():
 
 def serialize_test():
     class Worker(Model): pass
-    Worker.set_db(db)
     data = {'firstName': 'Matthew', 'lastName': 'Lewis'}
     worker = Worker.create(data)
     doc = worker.serialize_doc()
@@ -111,7 +105,6 @@ def serialize_test():
 
 def update_test():
     class Worker(Model): pass
-    Worker.set_db(db)
     data = {'firstName': 'Matthew', 'age': 28}
     worker = Worker.create(data)
     worker.age = 41

@@ -19,9 +19,24 @@ available [here](https://goo.gl/pbiPSB).
 ### Fundamentals
 
 The `Model` class is at the core of `pyro`. It provides all the
-Create/Read/Update/Delete functionality that you might need, and more. To use
-it, simply create a new class that inherits from Model, like this:
+Create/Read/Update/Delete functionality that you might need, and more. 
 
+Before we start modeling our data, however, we need to make contact with a
+database. We assume you have a MongoDB server running somewhere. If that is not
+the case, get [MongoDB](https://goo.gl/pbiPSB) installed and running on your
+system. Then, create a database object and attach it to the `User` class like
+this:
+
+```python
+from pyro.database import connect_to_database
+
+db = connect_to_database(database_name='my_database')
+Model.set_db(db)
+```
+
+This will ensure that all of our data objects have access to the common Mongo
+database. Now, to model some data, we simply create a it, simply create a new
+class that inherits from the Model class, like this:
 
 ```python
 from pyro.models import Model
@@ -30,21 +45,10 @@ class User(Model):
     pass
 ```
 
-Now we have a `User` class. Before we do anything else, however, we'll need to
-connect a database. We assume you have a MongoDB server running somewhere. If
-that is not the case, get [MongoDB](https://goo.gl/pbiPSB) installed and
-running on your system. Then, create a database object and attach it to the
-`User` class like this:
-
-```python
-from pyro.database import connect_to_database
-
-db = connect_to_database(database_name='my_database')
-User.set_db(db)
-```
-
-Now let's create a `User` instance. We can do this by calling the `new`
-method on the `User` class:
+Et voila! Now we have a `User` class. Think of this class a factory for
+creating new users, storing them in a database, retrieving them, etc. Now let's
+create a `User` instance. We can do this by calling the `new` method on the
+`User` class:
 
 ```python
 user_data = {'firstName': 'Matthew', 'lastName': Lewis, 'age': 28}
