@@ -128,7 +128,14 @@ properties on the user instance, and then call its `update` method:
 ```python
 user = User.find_by_id(_id)
 user.age = 41 # slightly more accurate
-user.update() # saved to database
+user.save() # saved to database
 ```
 
 ### Relationships
+
+We must frequently store objects that are somehow related to one another, and
+we may want to preserve this relationship in our database. A user produces many
+blog posts, a company has many employees, and so on. We'd like to explicitly
+model this relationship in our database. This is pretty easy to do using the
+`Model's` `has_many` method:
+

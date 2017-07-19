@@ -41,13 +41,12 @@ class Model(object):
     @classmethod
     def _name(cls):
         '''Convenience function for returning the name of the class.'''
-        name = cls.__name__.lower()
-        return singular(name)
+        return singular(camel_to_snake(name))
 
     @classmethod
     def _collection_name(cls):
         '''Name of Mongo collection associated with model.'''
-        return plural(cls._name())
+        return plural(camel_to_snake(cls._name()))
 
     @classmethod
     def new(cls, doc):
@@ -79,8 +78,7 @@ class Model(object):
     def save(self):
         '''Saves new object to the database.'''
         if '_id' in self.__dict__:
-            raise ValueError('Please use update to update an\
-                    existing document.')
+            return self.update()
         response = self._db[self._collection_name].insert_one(self._doc)
         if response.acknowledged:
             doc = self._cls.find_by_id(response.inserted_id)
