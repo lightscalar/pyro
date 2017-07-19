@@ -29,6 +29,7 @@ this:
 
 ```python
 from pyro.database import connect_to_database
+from pyro.model import Model
 
 db = connect_to_database(database_name='my_database')
 Model.set_db(db)
@@ -39,8 +40,6 @@ database. Now, to model some data, we simply create a it, simply create a new
 class that inherits from the Model class, like this:
 
 ```python
-from pyro.models import Model
-
 class User(Model):
     pass
 ```
