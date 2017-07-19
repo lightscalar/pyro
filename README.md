@@ -9,7 +9,7 @@ routes with minimal configuration. YMMV.
 
 ## Requirements
 
-Pyro requires `flask`, `inflect`, `pymongo`, all of which can be easily
+Pyro requires `flask`, `inflect`, and `pymongo`, all of which can be easily
 installed using the `pip` utility, *vel sim*. You'll also need to have a
 MongoDB server running somewhere. Instructions for installing that are
 available [here](https://goo.gl/pbiPSB).
