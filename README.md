@@ -69,7 +69,7 @@ It is important to note that this user has not yet been saved to the database.
 To do that, we need to `save` the object, like this,
 
 ```python
-user.save() # -> Saves it to the specified MongoDB
+user.save() # -> saves it to the specified MongoDB
 ```
 
 The user is now safely saved in a document in the `users` collection of the
