@@ -33,7 +33,8 @@ class User(Model):
 Now you have a `User` class. Before we do anything else, however, we'll need to
 connect a database. We assume you have a MongoDB server running somewhere. If
 that is not the case, get [MongoDB](https://goo.gl/pbiPSB) installed and 
-running on your system. Then, create a database object using:
+running on your system. Then, create a database object and attach it to the 
+`User` class like this:
 
 ```python
 from pyro.database import connect_to_database
