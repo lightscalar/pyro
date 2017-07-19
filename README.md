@@ -28,7 +28,7 @@ class User(Model):
     pass
 ```
 
-Now you have a User class. Before we do anything else, however, we'll need to
+Now you have a `User` class. Before we do anything else, however, we'll need to
 connect a database. We assume you have a MongoDB server running somewhere. If
 that is not the case, get [MongoDB](https://goo.gl/pbiPSB) installed and 
 running on your system. Then, create a database object using:
@@ -40,8 +40,22 @@ db = connect_to_database(database_name='my_database')
 User.set_db(db)
 ```
 
-And that's it. Now you can create an instance of a user by passing in a 
-dictionary object to the `new` method.
+Now let's create a `User` instance. We can do this by calling the `.new()` 
+method on the `User` class:
+
+```python
+user_data = {'firstName': 'Matthew', 'lastName': Lewis, 'age': 28}
+user = User.new(user_data)
+```
+
+Note that the attributes in that dictionary have been assigned as properties
+on the `user` instance. That is,
+
+```python
+user.first_name # Matthew
+user.last_name  # Lewis
+user.age        # 28
+```
 
 And are back to normal here?
 
