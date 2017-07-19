@@ -9,7 +9,7 @@ DB_NAME = 'mjl'
 db = connect_to_database(DB_NAME)
 db.widgets.delete_many({})
 db.workers.delete_many({})
-Model.set_db(db)
+Model.attach_db(db)
 
 
 # SETUP -----------------------------------------------------

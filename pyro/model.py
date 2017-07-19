@@ -95,7 +95,7 @@ class Model(object):
     def register_db(cls, db):
         '''Register the database for all subclasses.'''
         for Cls in cls.__subclasses__():
-            Cls.set_db(db)
+            Cls.attach_db(db)
 
     @classmethod
     def find_by_id(cls, _id):
@@ -108,7 +108,7 @@ class Model(object):
             return cls.new(doc)
 
     @classmethod
-    def set_db(cls, db):
+    def attach_db(cls, db):
         '''Set the database to use.'''
         cls._db = db
 

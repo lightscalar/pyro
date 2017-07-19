@@ -24,7 +24,7 @@ Create/Read/Update/Delete functionality that you might need, and more.
 Before we start modeling our data, however, we need to make contact with a
 database. We assume you have a MongoDB server running somewhere. If that is not
 the case, get [MongoDB](https://goo.gl/pbiPSB) installed and running on your
-system. Then, create a database object and attach it to the `User` class like
+system. Then, create a database object and attach it to the `Model` class like
 this:
 
 ```python
@@ -32,7 +32,7 @@ from pyro.database import connect_to_database
 from pyro.model import Model
 
 db = connect_to_database(database_name='my_database')
-Model.set_db(db)
+Model.attach_db(db)
 ```
 
 This will ensure that all of our data objects have access to the common Mongo
