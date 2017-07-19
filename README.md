@@ -58,9 +58,9 @@ user.age        # 28
 ```
 
 Note that, although our dictionary used camelCase for attribute names, once
-we've ingested dictionary, everything is converted to snake_case. This
+we've ingested the dictionary, everything is converted to snake_case. This
 anticipates the interfacing of this code with a JavaScript front-end, where
-camelCase dominates.
+camelCase is * de rigueur*.
 
 It is important to note that this user has not been saved to the databae. To
 do that, we need to `.save()` the object, like this,
