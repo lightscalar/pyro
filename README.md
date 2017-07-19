@@ -182,7 +182,9 @@ belong to one parent; in other words, many-to-many relationships are not
 Since we anticipate using these model objects as part of a Web API of some
 sort, we may eventually want to translate these objects to JSON for transport
 across an http connection. We can call the `serialize_doc` method to grab a
-`dict` containing all of our data.
+`dict` containing all of our data. By default, serialization does not include
+any children associated with a has_many relationship; these may be included by
+specifying `include_children=True`.
 
 
 # API Application
