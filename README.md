@@ -4,8 +4,8 @@
 
 PYRO is an opinionated framework for building quick Web APIs using Flask. It
 works with a Mongo database, a Flask web server, and that's about it. The goal
-is to provide a clean API for basic CRUD functionality, and serving up RESTFUL
-routes to an API with minimal configuration. YMMV.
+is to provide a clean API for basic CRUD functionality, while serving up
+RESTFUL routes with minimal configuration. YMMV.
 
 ## Requirements
 
