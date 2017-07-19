@@ -28,7 +28,17 @@ class User(Model):
     pass
 ```
 
-Now you have a User class.
+Now you have a User class. Before we do anything else, however, we'll need to
+connect a database. We assume you have a MongoDB server running somewhere. If
+that is not the case, get [MongoDB](https://goo.gl/pbiPSB) installed and 
+running on your system. Then, create a database object using:
+
+```python
+from pyro.database import connect_to_database
+
+db = connect_to_database(database_name='my_database')
+User.set_db(db)
+```
 
 And that's it. Now you can create an instance of a user by passing in a 
 dictionary object to the `new` method.
