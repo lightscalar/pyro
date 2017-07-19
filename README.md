@@ -36,8 +36,8 @@ Model.attach_db(db)
 ```
 
 This will ensure that all of our data objects have access to the common Mongo
-database. Now, to model some data, we simply create a it, simply create a new
-class that inherits from the Model class, like this:
+database. Now, to model some data, we simply create a new class that inherits
+from the Model class, like this:
 
 ```python
 class User(Model):
@@ -45,9 +45,9 @@ class User(Model):
 ```
 
 Et voila! Now we have a `User` class. Think of this class a factory for
-creating new users, storing them in a database, retrieving them, etc. Now let's
-create a `User` instance. We can do this by calling the `new` method on the
-`User` class:
+creating new users, storing them in the database, retrieving them, etc. Now
+let's create a `User` instance. We can do this by calling the `new` method on
+the `User` class:
 
 ```python
 user_data = {'firstName': 'Matthew', 'lastName': Lewis, 'age': 28}
@@ -72,7 +72,7 @@ It is important to note that this user has not yet been saved to the database.
 To do that, we need to `save` the object, like this,
 
 ```python
-user.save() # -> saves it to the specified MongoDB
+user.save() # -> saves it to the attached MongoDB
 ```
 
 The user is now safely saved in a document in the `users` collection of the
