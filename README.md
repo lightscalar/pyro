@@ -173,7 +173,7 @@ converting it to snake case and rendering it plural. At the moment, only
 `has_many` relationships are implemented.
 
 A given data model can have many has_many relationships, but a model can only
-belong to one other model; in order words, many to many relationships are not
+belong to one parent; in order words, many-to-many relationships are not
 (yet) possible.
 
 
