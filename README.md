@@ -105,8 +105,8 @@ database like this:
 user = User.find_by_id(_id)
 ```
 
-And if we've made a mistake in letting this user into our system, well then,
-we have access to the `delete` method on the user object:
+And if we find we've made a mistake in letting this user into our system, well
+then, we have access to the `delete` method on the user object:
 
 ```python
 user.delete() # goodbye cruel world
