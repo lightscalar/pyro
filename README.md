@@ -114,7 +114,7 @@ user.delete() # goodbye cruel world
 
 This deletes that user from the MongoDB. If we're feeling particularly
 misanthropic, however, we can destroy all the users at once by calling
-`delete_all()`:
+`delete_all`:
 
 ```python
 User.delete_all()  # well, there goes our user base
