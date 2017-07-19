@@ -136,12 +136,12 @@ user.save()     # saved to database
 
 ### Relationships
 
-We must frequently store objects that are somehow related to one another, and
+We frequently store data objects that are somehow related to one another, and
 we may want to preserve this relationship in our database. A user produces many
 blog posts, a company has many employees, and so on. 
 
 We can explicitly model this relationship in our database using the `Model's`
-several association helper methods:
+association helper methods.
 
 ```python
 class User(Model):
@@ -171,3 +171,7 @@ The associated blog posts are available by calling the `blog_posts` method
 on the user object; note that this is derived from the name of the class by
 converting it to snake case and rendering it plural. At the moment, only
 `has_many` relationships are implemented.
+
+A given data model can have many has_many relationships, but a model can only
+belong to one other model; in order words, many to many relationships are not
+(yet) possible.
