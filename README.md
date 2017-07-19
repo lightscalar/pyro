@@ -55,7 +55,7 @@ user.last_name  # Lewis
 user.age        # 28
 ```
 
-Note that, although our dictionary used camelCase for attribute names, once
+*Nota Bene*: although our dictionary used camelCase for attribute names, once
 we've ingested the dictionary, everything is converted to snake_case. This
 anticipates the interfacing of this elegant python code to an ugly JavaScript
 front-end, where camelCase is *de rigueur*.
