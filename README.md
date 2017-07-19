@@ -130,8 +130,8 @@ properties on the user instance, and then call its `update` method:
 
 ```python
 user = User.find_by_id(_id)
-user.age = 41 # slightly more accurate
-user.save() # saved to database
+user.age = 41   # slightly more accurate
+user.save()     # saved to database
 ```
 
 ### Relationships
