@@ -136,4 +136,20 @@ def has_many_test():
     assert_equals(list(shakespeare.books())[0].title, 'Hamlet')
 
 
+def multiple_children_tests():
+    class Author(Model): pass
+    class Book(Model): pass
+    class SuperFan(Model): pass
+    Author.delete_all()
+    Book.delete_all()
+    SuperFan.delete_all()
+    Author.has_many(Book)
+    Author.has_many(SuperFan)
+    shakespeare = Author.create({'name': 'William Shakespeare'})
+    hamlet = Book.create({'title': 'Hamlet', 'length': 145}, shakespeare)
+    macbeth = Book.create({'title': 'Macbeth', 'length': 125}, shakespeare)
+    harold = SuperFan.create({'name': 'Harold Bloom'}, shakespeare)
+    assert_equals(shakespeare.super_fans()[0].name, 'Harold Bloom')
+    assert_equals(len(shakespeare.books()), 2)
+
 

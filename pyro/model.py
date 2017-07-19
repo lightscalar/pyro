@@ -8,7 +8,6 @@ from pyro.utils import *
 class Model(object):
 
     has_many_registry = {}
-    has_one_registry = {}
     belongs_to_registry = {}
 
     def __init__(self, cls):
@@ -27,9 +26,10 @@ class Model(object):
             add_parent_to_child(ParentClass, self, self._db)
         # Has Many associations.
         if self._model_name in self.has_many_registry:
-            child_name = self.has_many_registry[self._model_name]
-            add_children_to_parent(self, child_name, self._db,\
-                    Model.__subclasses__())
+            children = self.has_many_registry[self._model_name]
+            for child_name in children:
+                add_children_to_parent(self, child_name, self._db,\
+                        Model.__subclasses__())
 
     @classmethod
     def all(cls, db=None):
@@ -58,13 +58,17 @@ class Model(object):
     @classmethod
     def has_many(cls, child_class):
         '''Specify a child class.'''
-        cls.has_many_registry[cls._name()] = child_class._collection_name()
+        parent_class = cls._name()
+        if parent_class not in cls.has_many_registry:
+            cls.has_many_registry[parent_class] = []
+        cls.has_many_registry[cls._name()].\
+                append(child_class._collection_name())
         cls.belongs_to_registry[child_class._name()] = cls._name()
 
     @classmethod
     def _name(cls):
         '''Convenience function for returning the name of the class.'''
-        return singular(camel_to_snake(cls.__name__))
+        return (camel_to_snake(cls.__name__))
 
     @classmethod
     def _collection_name(cls):
@@ -88,6 +92,12 @@ class Model(object):
             obj.__dict__[key] = val
         obj._attach_associations()
         return obj
+
+    @classmethod
+    def register_db(cls, db):
+        '''Register the database for all subclasses.'''
+        for Cls in cls.__subclasses__():
+            Cls.set_db(db)
 
     @classmethod
     def find_by_id(cls, _id):
@@ -148,13 +158,15 @@ class User(Model):
 class Blog(Model):
     pass
 
+class Address(Model):
+    pass
 
 if __name__ == '__main__':
     db = connect_to_database()
-    User.set_db(db)
-    Blog.set_db(db)
+    Model.register_db(db)
 
     User.has_many(Blog)
+    User.has_many(Address)
 
     user = User.create({'name': 'Matthew Lewis'})
     post = Blog.create({'title': 'Magnum Opus'}, user)

@@ -160,8 +160,11 @@ That declaration sets into motion a bunch of machinery, however, that let's us
 access related objects just as you'd expect:
 
 ```python
-blog_post_one.user  # returns the parent user object!
-user.blog_posts     # yields a list of blog posts! 
+blog_post_one.user      # returns the parent user object!
+user.blog_posts()       # returns a list of blog posts! 
 ```
 
-Here our prolific blogger has produced two blog posts. 
+The associated blog posts are available by calling the `blog_posts` method
+on the user object; note that this is derived from the name of the class by
+converting it to snake case and rendering it plural. At the moment, only
+`has_many` relationships are implemented.
