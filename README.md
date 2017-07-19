@@ -1,6 +1,5 @@
 # PYRO — A Lightweight Framework for Developing Quick Web APIs in Flask
 
-
 ## Introduction
 
 PYRO is an opinionated framework for building quick Web APIs using Flask. It
@@ -8,10 +7,9 @@ works with a Mongo database, a Flask web server, and that's about it. The goal
 is to provide a clean API for basic CRUD functionality, and serving up RESTFUL
 routes to an API with minimal configuration. YMMV.
 
-
 ## Requirements
 
-We require `flask`, `inflect`, `pymongo`, all of which can be easily installed
+Pyro requires `flask`, `inflect`, `pymongo`, all of which can be easily installed
 using the `pip` utility, *vel sim*.
 
 ## Models
@@ -60,7 +58,7 @@ user.age        # 28
 Note that, although our dictionary used camelCase for attribute names, once
 we've ingested the dictionary, everything is converted to snake_case. This
 anticipates the interfacing of this code with a JavaScript front-end, where
-camelCase is * de rigueur*.
+camelCase is *de rigueur*.
 
 It is important to note that this user has not been saved to the databae. To
 do that, we need to `.save()` the object, like this,
@@ -70,11 +68,37 @@ user.save() # -> Saves it to the specified MongoDB
 ```
 
 We can see how many users are in the database by looking at the *class* method
-`.count`:
+`.count()`:
 
 ```python
 User.count() # 1
 ```
 
-So far, so good.
+So far, so good. Once we've saved the user to the database, we find that a 
+new property on our object, `_id`:
 
+```python
+user._id # ObjectId('596e99c7378acd2ea8357ea4') 
+```
+
+This is the unique `_id` that is used internally by MongoDB to identify 
+individual documents. If we have this `_id`, we can load a document from the
+database like this:
+
+```python
+user = User.find_by_id(_id)
+```
+
+And if we've made a mistake in letting this user into our system, well then, 
+we have access to the `delete` method on the user object:
+
+```python
+user.delete() # goodbye cruel world
+```
+
+This deletes it from the MongoDB. If we're feeling particularly misanthropic,
+we can destroy all the users at once by calling `delete_all()`:
+
+```python
+Users.delete_all()  # well, there goes our user base
+```
