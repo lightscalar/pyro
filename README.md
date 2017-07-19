@@ -121,9 +121,9 @@ User.delete_all()  # well, there goes our user base
 ```
 
 Since we live in an imperfect world in a Universe hurtling towards its
-inevitable heat death, it may be the case that we've made a mistake and the
-user instance needs updating. In that case, we can update the attributes on the
-user instance, and then call its `update` method:
+inevitable heat death, it may be the case that we'll make a mistake and find
+the user instance needs updating. In that case, we can update the attributes on
+the user instance, and then call its `update` method:
 
 ```python
 user = User.find_by_id(_id)
