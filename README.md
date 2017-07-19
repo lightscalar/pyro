@@ -109,3 +109,13 @@ calling `delete_all()`:
 ```python
 User.delete_all()  # well, there goes our user base
 ```
+
+It may be the case that the user instance needs updating. In that case, we
+can update the attributes on the user instance, and then call the `update` 
+method:
+
+```python
+user = User.find_by_id(_id)
+user.age = 41 # slightly more accurate
+user.update() # saved to database
+```

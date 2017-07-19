@@ -108,3 +108,14 @@ def serialize_test():
     assert 'lastName' in doc
     assert type(doc['_id']) is str
 
+
+def update_test():
+    class Worker(Model): pass
+    Worker.set_db(db)
+    data = {'firstName': 'Matthew', 'age': 28}
+    worker = Worker.create(data)
+    worker.age = 41
+    worker.update()
+    updated_worker = Worker.find_by_id(worker._id)
+    assert_equals(updated_worker.age, 41)
+

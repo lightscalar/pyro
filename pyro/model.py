@@ -96,6 +96,9 @@ class Model(object):
 
     def update(self):
         '''Update existing document.'''
+        for key in self.__dict__.keys():
+            if key in self._doc:
+                self._doc[key] = self.__dict__[key]
         try:
             response = update_document(self._doc,\
                     self._db[self._collection_name])
