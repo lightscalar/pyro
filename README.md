@@ -112,9 +112,9 @@ then, we have access to the `delete` method on the user object:
 user.delete() # goodbye cruel world
 ```
 
-This deletes that particular user from the MongoDB. If we're feeling
-particularly misanthropic, however, we can destroy all the users at once by
-calling `delete_all()`:
+This deletes that user from the MongoDB. If we're feeling particularly
+misanthropic, however, we can destroy all the users at once by calling
+`delete_all()`:
 
 ```python
 User.delete_all()  # well, there goes our user base
