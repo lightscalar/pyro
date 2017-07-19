@@ -14,7 +14,7 @@ using the `pip` utility, *vel sim*.
 
 ## Models
 
-### Basics
+### Fundamentals
 
 The `Model` class is at the core of `pyro`. It provides all the
 Create/Read/Update/Delete functionality that you might need, and more. To use
