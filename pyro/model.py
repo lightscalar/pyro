@@ -41,7 +41,7 @@ class Model(object):
     @classmethod
     def _name(cls):
         '''Convenience function for returning the name of the class.'''
-        return singular(camel_to_snake(name))
+        return singular(camel_to_snake(cls.__name__))
 
     @classmethod
     def _collection_name(cls):

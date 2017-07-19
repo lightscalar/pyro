@@ -135,7 +135,22 @@ user.save() # saved to database
 
 We must frequently store objects that are somehow related to one another, and
 we may want to preserve this relationship in our database. A user produces many
-blog posts, a company has many employees, and so on. We'd like to explicitly
-model this relationship in our database. This is pretty easy to do using the
-`Model's` `has_many` method:
+blog posts, a company has many employees, and so on. 
+
+We can explicitly model this relationship in our database using the `Model's`
+several association helper methods:
+
+```python
+class User(Model):
+    pass
+
+class BlogPost(Model):
+    pass
+
+User.has_many(BlogPost)
+
+user = User.create({'name': 'William Shakespeare'})
+blog_post = BlogPost.create({'name': 'Hamlet'}, user)
+```
+
 
