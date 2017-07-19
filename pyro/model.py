@@ -1,4 +1,5 @@
 from ipdb import set_trace as debug
+from flask import jsonify, request
 from pyro.database import *
 from pyro.utils import *
 
@@ -108,6 +109,14 @@ class Model(object):
             return cls.new(doc)
 
     @classmethod
+    def find_by_parent_id(cls, _id):
+        '''Finds all documents with specified parent _id.'''
+        parent_name = Model.belongs_to_registry[cls._name()]
+        ParentClass = name_to_class(parent_name, Model.__subclasses__())
+        parent = ParentClass.find_by_id(_id)
+        return parent
+
+    @classmethod
     def attach_db(cls, db):
         '''Set the database to use.'''
         cls._db = db
@@ -137,6 +146,33 @@ class Model(object):
         doc = serialize(self._doc)
         return doc
 
+    @classmethod
+    def index_controller(cls, resource_id=None):
+        if resource_id is not None:
+            # We're requesting a nested resource
+            print('Requesting nested resource!')
+            parent = cls.find_by_parent_id(resource_id)
+            resources = parent.__dict__[cls._collection_name()]()
+            return jsonify([x.serialize_doc() for x in resources])
+        return jsonify(serialize(list(cls.all())))
+
+    @classmethod
+    def show_controller(cls, resource_id):
+        obj = cls.find_by_id(resource_id)
+        return jsonify(obj.serialize_doc())
+
+    @classmethod
+    def create_controller(cls):
+        obj = cls.create(request.json)
+        print (request.json)
+        return jsonify(obj.serialize_doc())
+
+    @classmethod
+    def delete_controller(cls, resource_id):
+        obj = cls.find_by_id(resource_id)
+        obj.delete()
+        return jsonify({'status': 200})
+
     def update(self):
         '''Update existing document.'''
         for key in self.__dict__.keys():
@@ -147,25 +183,4 @@ class Model(object):
                     self._db[self._collection_name])
         except:
             raise ValueError('Cannot update the document.')
-
-
-# HERE IS AN EXAMPLE MODEL DERIVED FROM THE MODEL CLASS ABOVE.
-class User(Model):
-    pass
-
-class Blog(Model):
-    pass
-
-class Address(Model):
-    pass
-
-if __name__ == '__main__':
-    db = connect_to_database()
-    Model.register_db(db)
-
-    User.has_many(Blog)
-    User.has_many(Address)
-
-    user = User.create({'name': 'Matthew Lewis'})
-    post = Blog.create({'title': 'Magnum Opus'}, user)
 
