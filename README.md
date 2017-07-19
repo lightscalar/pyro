@@ -14,6 +14,8 @@ using the `pip` utility, *vel sim*.
 
 ## Models
 
+### Basics
+
 The `Model` class is at the core of `pyro`. It provides all the
 Create/Read/Update/Delete functionality that you might need, and more. To use
 it, simply create a new class that inherits from Model, like this:
@@ -125,3 +127,5 @@ user = User.find_by_id(_id)
 user.age = 41 # slightly more accurate
 user.update() # saved to database
 ```
+
+### Relationships
