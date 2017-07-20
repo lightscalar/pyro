@@ -269,10 +269,4 @@ For the example above, the following routes are generated:
 | HTTP Verb | Path | Action Method | What Does It Do? |
 | --------  | ---- | ------------- | ---------------- |
 | GET | /users | index  | Returns list of all users |
-
-
-| First Header  | Second Header |
-| ------------  | ------------- |
-| Hello         | Goodbye       |
-g
-| Second        | Line          |
+| POST | /users | create | Create a new user
