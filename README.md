@@ -39,6 +39,7 @@ POST    http://127.0.0.1:5000/users                         # creates a new user
 GET     http://127.0.0.1:5000/user/<user_id>                # retrieves user <user_id>
 DELETE  http://127.0.0.1:5000/user/<user_id>                # deletes user <user_id>
 GET     http://127.0.0.1:5000/user/<user_id>/blog_posts     # lists user's articles
+...
 ```
 
 We'll talk about the details below, but that's basically it. To add your own
