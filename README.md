@@ -225,7 +225,8 @@ specifying `include_children=True`.
 
 Pyro's serialization/deserialization protocols will automatically convert
 between [Python](https://www.python.org/dev/peps/pep-0008/#naming-conventions)
-and [JavaScript](http://www.j-io.org/Javascript-Naming_Conventions).
+and [JavaScript](http://www.j-io.org/Javascript-Naming_Conventions) naming
+conventions.
 
 # The Application
 
