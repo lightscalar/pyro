@@ -73,4 +73,6 @@ def update_object():
     u.age = 41
     u.save()
     assert_equals(User.to_objects(User.all())[0].age, 41)
+    u.delete()
+    assert_equals(list(User.all()), [])
 

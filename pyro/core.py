@@ -39,6 +39,75 @@ class Pyro(object, metaclass=PyroMeta):
         cls._db = db
 
     @classmethod
+    def _routes(cls):
+        '''Create the routes associated with this data resource.'''
+        routes = {}
+
+        # index
+        route_name = '{:s}.index'.format(cls._plural_name)
+        route = '/{:s}'.format(cls._plural_name)
+        methods = ['GET']
+        callback = cls._index
+        routes[route_name] = {'route': route, 'methods': methods,\
+                              'callback': callback}
+        # show
+        route_name = '{:s}.show'.format(cls._singular_name)
+        route = '/{:s}/<resource_id>'.format(cls._singular_name)
+        methods = ['GET']
+        callback = cls._show
+        routes[route_name] = {'route': route, 'methods': methods,\
+                              'callback': callback}
+        # create
+        route_name = '{:s}.show'.format(cls._plural_name)
+        route = '/{:s}'.format(cls._plural_name)
+        methods = ['POST']
+        callback = cls._create
+        routes[route_name] = {'route': route, 'methods': methods,\
+                              'callback': callback}
+        # update
+        route_name = '{:s}.update'.format(cls._singular_name)
+        route = '/{:s}/<resource_id>'.format(cls._singular_name)
+        methods = ['PUT']
+        callback = cls._update
+        routes[route_name] = {'route': route, 'methods': methods,\
+                              'callback': callback}
+        # destroy
+        route_name = '{:s}.destroy'.format(cls._singular_name)
+        route = '/{:s}/<resource_id>'.format(cls._singular_name)
+        methods = ['DELETE']
+        callback = cls._destroy
+        routes[route_name] = {'route': route, 'methods': methods,\
+                              'callback': callback}
+        # TODO: Check for relationships to other models and forge routes.
+        return routes
+
+    # -------------- CONTROLLER CLASSES -----------------------------
+    @classmethod
+    def _index(cls):
+        '''List all resources.'''
+        pass
+
+    @classmethod
+    def _create(cls):
+        '''Create a new resource.'''
+        pass
+
+    @classmethod
+    def _show(cls):
+        '''Find the specified resource'''
+        pass
+
+    @classmethod
+    def _destroy(cls):
+        '''Delete the specified resource.'''
+        pass
+
+    @classmethod
+    def _update(cls):
+        '''Update the specified resource.'''
+        pass
+
+    @classmethod
     def new(cls, doc):
         '''Create a new object, but do not save to database.'''
         cls._doc = deserialize(doc)
