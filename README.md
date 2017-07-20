@@ -270,3 +270,4 @@ For the example above, the following routes are generated:
 | --------  | ---- | ------------- | ---------------- |
 | GET | /users | index  | Returns list of all users |
 | POST | /users | create | Create a new user
+| GET } /users/<user_id> | show | Return a specific user |
