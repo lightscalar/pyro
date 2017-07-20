@@ -12,6 +12,7 @@ Let's see how you might create a simple RESTFUL API.
 ```python
 from pyro.basics import *
 
+# Let's create some data models.
 class User(Pyro):
     pass
 
