@@ -30,8 +30,14 @@ app = Application(Pyro)
 app.run # -> Running on http://127.0.0.1:5000/ (Press CTR+C to qui)
 ```
 
-That's it. Nwiw we have access to all the usual RESTFUL routes needed to do
-basic CRUD. 
+That's it. Now we have access to all the usual RESTFUL routes needed to create,
+update, delete, and list data objects:
+
+```unix
+GET     http://127.0.0.1:5000/users             # return list of users
+POST    http://127.0.0.1:5000/users             # creates a new user
+GET     http://127.0.0.1:5000/user/<user_id>0   # retrieves a specific user
+```
 
 ## Requirements
 
