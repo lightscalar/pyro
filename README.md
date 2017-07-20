@@ -270,5 +270,6 @@ For the example above, the following routes are generated:
 | --------  | ---- | ------------- | ---------------- |
 | GET | /users | index  | Returns list of all users |
 | POST | /users | create | Create a new user
-| GET | /users/<user_id> | show | Return the user with id <user_id>|
-| DELETE | /users/<user_id> | destroy | Delete the user with id <user_id>|
+| GET | /user/<user_id> | show | Return the user with id <user_id>|
+| DELETE | /user/<user_id> | destroy | Delete the user with id <user_id>|
+| GET | /user/<user_id>/blog_posts | index | Return list of <user_id>'s blog posts|
