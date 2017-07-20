@@ -27,7 +27,7 @@ Pyro.attach_db()        # defaults to locally running Mongo server...
 
 # Launch a web server.
 app = Application(Pyro)
-app.run()               # -> Running on http://127.0.0.1:5000/ (Press CTR+C to quit)
+app.run()               # -> Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
 ```
 
 That's it. Now we have access to all the usual RESTFUL routes needed to create,
@@ -232,8 +232,9 @@ conventions.
 # The Application
 
 Okay, so we've got our data modeled. Now how do we create an API from these
-`Pyro`-based classes? We create a `pyro` `Application`, as we did above. Let's
-reproduce that example here, and discuss it in more detail.
+`Pyro`-based classes? We create a Pyro `Application` instance, as we did above.
+Let's reproduce that example here, and discuss in greater detail what is 
+going on:
 
 ```python
 from pyro.basics import *
@@ -253,7 +254,7 @@ Pyro.attach_db()        # defaults to locally running Mongo server...
 
 # Launch a web server.
 app = Application(Pyro)
-app.run()               # -> Running on http://127.0.0.1:5000/ (Press CTR+C to quit)
+app.run()               # -> Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
 ```
 
 When we create those data objects, `User` and `BlogPost`, Pyro automatically
@@ -261,7 +262,6 @@ generates the typical RESTFUL routes that allow you to create, read, update
 and delete those resources. When we create a Pyro `Application` instance and
 run it, we boot up a webserver that serves up these RESTFUL routes — all with
 zero boilerplate!
-
 
 | First Header  | Second Header |
 | ------------  | ------------- |
