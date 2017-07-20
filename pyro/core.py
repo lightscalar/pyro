@@ -58,7 +58,7 @@ class Pyro(object, metaclass=PyroMeta):
         routes[route_name] = {'route': route, 'methods': methods,\
                               'callback': callback}
         # create
-        route_name = '{:s}.show'.format(cls._plural_name)
+        route_name = '{:s}.create'.format(cls._plural_name)
         route = '/{:s}'.format(cls._plural_name)
         methods = ['POST']
         callback = cls._create
@@ -78,10 +78,20 @@ class Pyro(object, metaclass=PyroMeta):
         callback = cls._destroy
         routes[route_name] = {'route': route, 'methods': methods,\
                               'callback': callback}
-        # TODO: Check for relationships to other models and forge routes.
+        # Are there any nested routes?
+        for child in cls._children:
+            # index - only two levels of nesting allowed!
+            route_name = '{:s}.{:s}.index'.format(cls._singular_name,\
+                    child._plural_name)
+            route = '/{:s}/<resource_id>/{:s}'.format(cls._singular_name,\
+                    child._plural_name)
+            methods = ['GET']
+            callback = cls._index
+            routes[route_name] = {'route': route, 'methods': methods,\
+                                  'callback': callback}
         return routes
 
-    # -------------- CONTROLLER CLASSES -----------------------------
+    # -------------- CONTROLLER METHODS -----------------------------
     @classmethod
     def _index(cls):
         '''List all resources.'''
@@ -106,16 +116,38 @@ class Pyro(object, metaclass=PyroMeta):
     def _update(cls):
         '''Update the specified resource.'''
         pass
+    # -------------- END CONTROLLER METHODS --------------------------
 
     @classmethod
-    def new(cls, doc):
+    def new(cls, doc, parent_instance=None):
         '''Create a new object, but do not save to database.'''
         cls._doc = deserialize(doc)
         obj = cls()
         obj.before_new()
+        cls.validate_associations(cls._doc, parent_instance)
         obj.__dict__.update(cls._doc)
         obj.after_new()
         return obj
+
+    @classmethod
+    def create(cls, doc, parent_instance=None):
+        '''Create an instance and save to database.'''
+        obj = cls.new(doc)
+        obj.save()
+        return obj
+
+    @classmethod
+    def validate_associations(cls, doc, parent_instance):
+        '''Ensure that has_many relationships are working.'''
+        if (parent_instance is not None) and parent_instance.__class__\
+                in cls._parents:
+            doc[name_to_id(parent_instance._singular_name)] =\
+                    parent_instance._id
+        elif len(cls._parents) > 0:
+            raise ValueError(('This class must belong to an instance of '
+                  'the {:s} class.').format(class_case(cls._parents[0].\
+                          _singular_name)))
+        return doc
 
     @classmethod
     def all(cls):
@@ -134,9 +166,16 @@ class Pyro(object, metaclass=PyroMeta):
         '''Convert the output of a query into a list of objects.'''
         return [cls.new(doc) for doc in cursor]
 
+    @classmethod
+    def has_many(cls, child_class):
+        '''Specify a one-to-many relationship between data models.'''
+        child_class._parents.append(cls)
+        cls._children.append(child_class)
+
     def save(self):
         '''Save the current document, if there is one.'''
         collection = self._db[self._plural_name]
+        self._doc.update(self.__dict__)
         if self.doc_exists:
             self._update_existing_doc()
         else:
@@ -207,8 +246,13 @@ if __name__ == '__main__':
         db = connect_to_database()
         Pyro._attach_db(db)
 
-        class User(Pyro):
+        class Author(Pyro):
             pass
 
-        u = User.new({'firstName': 'Matthew J. Lewis'})
+        class Book(Pyro):
+                pass
+
+        Author.has_many(Book)
+
+        mjl = Author.create({'firstName': 'Matthew J. Lewis', 'age': 37})
 

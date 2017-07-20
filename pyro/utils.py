@@ -138,3 +138,6 @@ class ChildCollection(object):
         return [ChildClass.find_by_id(doc['_id']) for\
                 doc in self._collection.find(query)]
 
+def class_case(string):
+    cameled = snake_to_camel(string)
+    return cameled[0].upper() + cameled[1:]
