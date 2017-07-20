@@ -257,7 +257,7 @@ app.run()               # -> Running on http://127.0.0.1:5000/ (Press CTR+C to q
 
 When we create those data objects, `User` and `BlogPost
 
-| First Header | Second Header |
-| ------------ | ------------- |
-| Hello        | Goodbye       |
-| ------------ | ------------- |
+| First Header  | Second Header |
+| ------------  | ------------- |
+| Hello         | Goodbye       |
+| Second        | Line          |
