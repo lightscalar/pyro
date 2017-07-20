@@ -34,11 +34,11 @@ That's it. Now we have access to all the usual RESTFUL routes needed to create,
 update, delete, and list data objects:
 
 ```unix
-GET     http://127.0.0.1:5000/users                     # return list of users
-POST    http://127.0.0.1:5000/users                     # creates a new user
-GET     http://127.0.0.1:5000/user/<user_id>            # retrieves user <user_id>
-DELETE  http://127.0.0.1:5000/user/<user_id>            # deletes user <user_id>
-GET     http://127.0.0.1:5000/user/<user_id>/articles   # lists user's articles
+GET     http://127.0.0.1:5000/users                         # return list of users
+POST    http://127.0.0.1:5000/users                         # creates a new user
+GET     http://127.0.0.1:5000/user/<user_id>                # retrieves user <user_id>
+DELETE  http://127.0.0.1:5000/user/<user_id>                # deletes user <user_id>
+GET     http://127.0.0.1:5000/user/<user_id>/blog_posts     # lists user's articles
 ```
 
 We'll talk about the details below, but that's basically it. To add your own
@@ -231,7 +231,8 @@ conventions.
 # The Application
 
 Okay, so we've got our data modeled. Now how do we create an API from these
-`Pyro`-based classes? We create a `pyro` `Application`, as we did above.
+`Pyro`-based classes? We create a `pyro` `Application`, as we did above. Let's 
+reproduce that example here, and discuss it in more detail.
 
 ```python
 from pyro.basics import *
@@ -253,3 +254,10 @@ Pyro.attach_db()        # defaults to locally running Mongo server...
 app = Application(Pyro)
 app.run()               # -> Running on http://127.0.0.1:5000/ (Press CTR+C to quit)
 ```
+
+When we create those data objects, `User` and `BlogPost
+
+| First Header | Second Header |
+| ------------ | ------------- |
+| Hello        | Goodbye       |
+| ------------ | ------------- |
