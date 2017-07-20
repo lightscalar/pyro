@@ -23,7 +23,7 @@ class BlogPost(Pyro):
 User.has_many(BlogPost)
 
 # Connect a database.
-Pyro.attach_db()
+Pyro.attach_db()        # defaults to locally running Mongo server...
 
 app = Application(Pyro)
 app.run # -> Running on http://127.0.0.1:5000/ (Press CTR+C to quit)
