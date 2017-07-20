@@ -366,23 +366,3 @@ class Pyro(object, metaclass=PyroMeta):
     def after_save(self):
         '''Override to add functionality.'''
         pass
-
-
-if __name__ == '__main__':
-
-        db = connect_to_database()
-        Pyro._attach_db(db)
-
-        class Author(Pyro):
-            pass
-
-        class Book(Pyro):
-                pass
-
-        Author.has_many(Book)
-
-        mjl = Author.create({'firstName': 'Matthew J. Lewis', 'age': 37})
-        macbeth = Book.create({'title': 'Macbeth', 'pages': 432}, mjl)
-        hamlet = Book.create({'title': 'Hamlet', 'pages': 432}, mjl)
-        thesun = Book.create({'title': 'The Sun Also Rises', 'pages': 432}, mjl)
-
