@@ -7,6 +7,31 @@ requries a Mongo database, a Flask web server, and that's about it. The goal is
 to provide a clean API for basic CRUD functionality, while serving up RESTFUL
 routes with minimal configuration. YMMV.
 
+Let's see how you might create a simple RESTFUL API. 
+
+```python
+from pyro.basics import *
+
+class User(Pyro):
+    pass
+
+class BlogPost(Pyro):
+    pass
+
+# Specify a has_many relationship between data objects.
+User.has_many(BlogPost)
+
+# Connect a database.
+db = connect_to_database('my_mongo_db')
+Pyro._attach_db(db)
+
+app = Application(Pyro)
+app.run # -> Running on http://127.0.0.1:5000/ (Press CTR+C to qui)
+```
+
+That's it. Nwiw we have access to all the usual RESTFUL routes needed to do
+basic CRUD. 
+
 ## Requirements
 
 Pyro requires `flask`, `inflect`, and `pymongo`, all of which can be easily

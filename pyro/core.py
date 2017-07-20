@@ -1,6 +1,7 @@
+from ipdb import set_trace as debug
+from flask import jsonify
 from pyro.database import *
 from pyro.utils import *
-from ipdb import set_trace as debug
 
 
 class PyroMeta(type):
@@ -94,32 +95,83 @@ class Pyro(object, metaclass=PyroMeta):
     def _index(cls):
         '''List all resources.'''
         cls.before_index() # before hook
+        cls._docs = cls.all()
         cls.after_index() # after hook
+        return cls._to_response(resources)
 
     @classmethod
     def _create(cls):
         '''Create a new resource.'''
+        cls._request = request
         cls.before_create() # before hook
+        cls._obj = cls.create(request.json)
         cls.after_create() # after hook
+        return cls._to_response(cls._obj._doc)
 
     @classmethod
-    def _show(cls):
+    def _show(cls, resource_id):
         '''Find the specified resource'''
+        cls._resource_id = resource_id
         cls.before_show() # before hook
+        cls._obj = cls.find_by_id(cls._resource_id)
         cls.after_show() # after hook
+        return cls._to_response(cls._obj._doc)
 
     @classmethod
-    def _destroy(cls):
+    def _destroy(cls, resource_id):
         '''Delete the specified resource.'''
+        cls._resource_id = resource_id
         cls.before_destroy() # before hook
         cls.after_destroy() # after hook
 
     @classmethod
-    def _update(cls):
+    def _update(cls, resource_id):
         '''Update the specified resource.'''
+        cls._resource_id = resource_id
         cls.before_update() # before hook
         cls.after_update() # after hook
     # -------------- END CONTROLLER METHODS --------------------------
+
+    # -------------- HOOK METHODS ------------------------------------
+    @classmethod
+    def before_index(cls):
+        pass
+
+    @classmethod
+    def after_index(cls):
+        pass
+
+    @classmethod
+    def before_create(cls):
+        pass
+
+    @classmethod
+    def after_create(cls):
+        pass
+
+    @classmethod
+    def before_show(cls):
+        pass
+
+    @classmethod
+    def after_show(cls):
+        pass
+
+    @classmethod
+    def before_update(cls):
+        pass
+
+    @classmethod
+    def after_update(cls):
+        pass
+
+    @classmethod
+    def before_destroy(cls):
+        pass
+
+    @classmethod
+    def after_destroy(cls):
+    # -------------- END HOOK METHODS--------------------------------
 
     @classmethod
     def new(cls, doc, parent_instance=None):
@@ -157,7 +209,7 @@ class Pyro(object, metaclass=PyroMeta):
     def all(cls):
         '''Return a list of all documents associated with this object.'''
         collection = cls._db[cls._plural_name]
-        return collection.find()
+        return list(collection.find())
 
     @classmethod
     def delete_all(cls):
@@ -169,6 +221,11 @@ class Pyro(object, metaclass=PyroMeta):
     def to_objects(cls, cursor):
         '''Convert the output of a query into a list of objects.'''
         return [cls.new(doc) for doc in cursor]
+
+    @classmethod
+    def _to_response(cls, package):
+        '''Convert the output of a data package into a JSON object.'''
+        return jsonify(serialize(package))
 
     @classmethod
     def find_by_id(cls, _id):
