@@ -57,7 +57,7 @@ available [here](https://goo.gl/pbiPSB).
 
 The `Pyro` class is at the core of `pyro`. It handles the creation of data
 models, provides a transparent interface to the database, and even handles the
-routing of web API calls to handle the Create/Read/Update/Delete boilerplate
+routing of web API calls to avoid superfluous Create/Read/Update/Delete boilerplate
 functionality that you need.
 
 Before we start modeling our data, however, we need to make contact with a
