@@ -33,9 +33,12 @@ class Pyro(object, metaclass=PyroMeta):
     _db = None
 
     @classmethod
-    def _attach_db(cls, db):
+    def attach_db(cls, db=None):
         '''Attaches a database to the Pyro environment.'''
-        cls._db = db
+        if db is None:
+            cls._db = connect_to_database()
+        else:
+            cls._db = db
 
     @classmethod
     def _routes(cls):
@@ -171,6 +174,7 @@ class Pyro(object, metaclass=PyroMeta):
 
     @classmethod
     def after_destroy(cls):
+        pass
     # -------------- END HOOK METHODS--------------------------------
 
     @classmethod

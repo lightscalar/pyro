@@ -23,11 +23,10 @@ class BlogPost(Pyro):
 User.has_many(BlogPost)
 
 # Connect a database.
-db = connect_to_database('my_mongo_db')
-Pyro._attach_db(db)
+Pyro.attach_db()
 
 app = Application(Pyro)
-app.run # -> Running on http://127.0.0.1:5000/ (Press CTR+C to qui)
+app.run # -> Running on http://127.0.0.1:5000/ (Press CTR+C to quit)
 ```
 
 That's it. Now we have access to all the usual RESTFUL routes needed to create,

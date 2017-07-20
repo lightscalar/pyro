@@ -6,8 +6,7 @@ from pyro.database import *
 from pyro.core import *
 
 DB_NAME = 'mjl'
-db = connect_to_database(DB_NAME)
-Pyro._attach_db(db)
+Pyro.attach_db()
 
 
 # SETUP -----------------------------------------------------
@@ -56,11 +55,6 @@ def before_new_hook_test():
             self.sekret = 12345
     w = Widget.new({'name': 'Sexy New Auto'})
     assert_equals(w.sekret, 12345)
-
-
-@with_setup(setup, teardown)
-def attached_db_test():
-    assert_equals(Pyro._db.name, 'mjl')
 
 
 @with_setup(setup, teardown)
