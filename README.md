@@ -273,3 +273,4 @@ For the example above, the following routes are generated:
 | GET | /user/<user_id> | show | Return the user with id <user_id>|
 | DELETE | /user/<user_id> | destroy | Delete the user with id <user_id>|
 | GET | /user/<user_id>/blog_posts | index | Return list of <user_id>'s blog posts|
+| POST | /user/<user_id>/blog_posts | create | Create a new blog post belonging to <user_id>|
