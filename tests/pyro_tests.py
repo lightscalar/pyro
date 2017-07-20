@@ -53,7 +53,7 @@ def new_widget_test():
 def before_new_hook_test():
     class Widget(Pyro):
         def before_new(self):
-            self._doc['sekret'] = 12345
+            self.sekret = 12345
     w = Widget.new({'name': 'Sexy New Auto'})
     assert_equals(w.sekret, 12345)
 
@@ -76,3 +76,16 @@ def update_object():
     u.delete()
     assert_equals(list(User.all()), [])
 
+
+@with_setup(setup, teardown)
+def has_many_test():
+    class Author(Pyro): pass
+    class Book(Pyro): pass
+    Author.delete_all()
+    Book.delete_all()
+    Author.has_many(Book)
+    mjl = Author.create({'firstName': 'Matthew J. Lewis', 'age': 37})
+    macbeth = Book.create({'title': 'Macbeth', 'pages': 432}, mjl)
+    hamlet = Book.create({'title': 'Hamlet', 'pages': 432}, mjl)
+    thesun = Book.create({'title': 'The Sun Also Rises', 'pages': 432}, mjl)
+    assert_equals(len(mjl.books()), 3)
