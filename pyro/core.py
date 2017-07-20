@@ -1,4 +1,6 @@
+from pyro.database import *
 from pyro.utils import *
+from ipdb import set_trace as debug
 
 
 class PyroMeta(type):
@@ -9,6 +11,7 @@ class PyroMeta(type):
         dct['_plural_name'] = plural(camel_to_snake(name))
         dct['_parents'] = []
         dct['_children'] = []
+        dct['_doc'] = None
         return super(PyroMeta, cls).__new__(cls, name, parents, dct)
 
     def __init__(cls, name, bases, nmspc):
@@ -30,6 +33,7 @@ class Pyro(object, metaclass=PyroMeta):
     _routes = []
     _db = None
 
+    @classmethod
     def _attach_db(cls, db):
         '''Attaches a database to the Pyro environment.'''
         cls._db = db
@@ -37,38 +41,105 @@ class Pyro(object, metaclass=PyroMeta):
     @classmethod
     def new(cls, doc):
         '''Create a new object, but do not save to database.'''
-        cls._doc = doc
-        cls.before_new() # before hook
+        cls._doc = deserialize(doc)
         obj = cls()
+        obj.before_new()
         obj.__dict__.update(cls._doc)
-        cls.after_new() # after hook
+        obj.after_new()
         return obj
 
     @classmethod
-    def before_new(cls):
-        pass
+    def all(cls):
+        '''Return a list of all documents associated with this object.'''
+        collection = cls._db[cls._plural_name]
+        return collection.find()
 
     @classmethod
-    def after_new(cls):
+    def delete_all(cls):
+        '''Return a list of all documents associated with this object.'''
+        collection = cls._db[cls._plural_name]
+        return collection.delete_many({})
+
+    @classmethod
+    def to_objects(cls, cursor):
+        '''Convert the output of a query into a list of objects.'''
+        return [cls.new(doc) for doc in cursor]
+
+    def save(self):
+        '''Save the current document, if there is one.'''
+        collection = self._db[self._plural_name]
+        if self.doc_exists:
+            self._update_existing_doc()
+        else:
+            self._save_new_doc()
+
+    def _save_new_doc(self):
+        '''Save new document to the database.'''
+        self.before_save() # before hook
+        response = self._db[self._plural_name].insert_one(self._doc)
+        self._doc['_id'] = response.inserted_id
+        self.__dict__.update(self._doc)
+        self.after_save() # after hook
+
+    def _update_existing_doc(self):
+        '''Update an existing document.'''
+        self.before_update() # before hook
+        self._doc.update(self.__dict__)
+        update_document(self._doc, self._db[self._plural_name])
+        self.after_update() # after hook
+
+    def delete(self):
+        '''Delete the current document.'''
+        self.before_delete() # before hook
+        collection = self._db[self._plural_name]
+        collection.delete_one(qwrap(self._id))
+        self.after_delete() # after hook
+
+    @property
+    def doc_exists(self):
+        '''Does the document exist in the database?'''
+        return '_id' in self._doc # if it has an ID, it has been saved
+
+    def before_new(self):
         '''Override to add functionality.'''
         pass
 
-    @classmethod
-    def before_update(cls):
+    def after_new(self):
         '''Override to add functionality.'''
         pass
 
-    @classmethod
-    def after_update(cls):
+    def before_update(self):
         '''Override to add functionality.'''
         pass
 
-    @classmethod
-    def before_delete(cls):
+    def after_update(self):
         '''Override to add functionality.'''
         pass
 
-    @classmethod
-    def after_delete(cls):
+    def before_delete(self):
         '''Override to add functionality.'''
         pass
+
+    def after_delete(self):
+        '''Override to add functionality.'''
+        pass
+
+    def before_save(self):
+        '''Override to add functionality.'''
+        pass
+
+    def after_save(self):
+        '''Override to add functionality.'''
+        pass
+
+
+if __name__ == '__main__':
+
+        db = connect_to_database()
+        Pyro._attach_db(db)
+
+        class User(Pyro):
+            pass
+
+        u = User.new({'firstName': 'Matthew J. Lewis'})
+

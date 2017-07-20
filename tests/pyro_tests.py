@@ -7,6 +7,7 @@ from pyro.core import *
 
 DB_NAME = 'mjl'
 db = connect_to_database(DB_NAME)
+Pyro._attach_db(db)
 
 
 # SETUP -----------------------------------------------------
@@ -35,6 +36,12 @@ def registry_test():
 
 
 @with_setup(setup, teardown)
+def empty_doc_test():
+    class Widget(Pyro): pass
+    assert Widget._doc is None
+
+
+@with_setup(setup, teardown)
 def new_widget_test():
     class Widget(Pyro): pass
     data = {'name': 'My Widget', 'age': 43, 'feet': False}
@@ -43,9 +50,27 @@ def new_widget_test():
 
 
 @with_setup(setup, teardown)
-def new_widget_test():
-    class Widget(Pyro): pass
+def before_new_hook_test():
+    class Widget(Pyro):
+        def before_new(self):
+            self._doc['sekret'] = 12345
+    w = Widget.new({'name': 'Sexy New Auto'})
+    assert_equals(w.sekret, 12345)
 
 
+@with_setup(setup, teardown)
+def attached_db_test():
+    assert_equals(Pyro._db.name, 'mjl')
 
+
+@with_setup(setup, teardown)
+def update_object():
+    class User(Pyro): pass
+    User.delete_all()
+    u = User.new({'firstName': 'Matthew', 'age': 34})
+    u.save()
+    assert_equals(User.to_objects(User.all())[0].age, 34)
+    u.age = 41
+    u.save()
+    assert_equals(User.to_objects(User.all())[0].age, 41)
 
