@@ -1,5 +1,5 @@
 from ipdb import set_trace as debug
-from flask import jsonify
+from flask import jsonify, request
 from pyro.database import *
 from pyro.utils import *
 
@@ -95,12 +95,17 @@ class Pyro(object, metaclass=PyroMeta):
 
     # -------------- CONTROLLER METHODS -----------------------------
     @classmethod
-    def _index(cls):
+    def _index(cls, resource_id=None):
         '''List all resources.'''
         cls.before_index() # before hook
-        cls._docs = cls.all()
+        if resource_id: # a nested resource!
+            endpoint = request.url_rule.endpoint.split('.')
+            cls._obj = cls.find_by_id(resource_id)
+            cls._docs = cls._obj.__dict__[endpoint[1]]()
+        else:
+            cls._docs = cls.all()
         cls.after_index() # after hook
-        return cls._to_response(resources)
+        return cls._to_response(cls._docs)
 
     @classmethod
     def _create(cls):

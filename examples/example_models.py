@@ -1,4 +1,4 @@
-from pyro.core import Pyro
+from pyro.basics import *
 
 
 class User(Pyro):

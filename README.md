@@ -178,14 +178,14 @@ We frequently store data objects that are somehow related to one another, and
 we may want to preserve this relationship in our database. A user produces many
 blog posts, a company has many employees, and so on.
 
-We can explicitly model this relationship in our database using the `Model`'s
+We can explicitly model this relationship in our database using `Pyro`'s
 association helper methods.
 
 ```python
-class User(Model):
+class User(Pyro):
     pass
 
-class BlogPost(Model):
+class BlogPost(Pyro):
     pass
 
 User.has_many(BlogPost)
@@ -197,8 +197,8 @@ blog_post_two = BlogPost.create({'title': 'Macbeth'}, user)
 
 By declaring `User.has_many(BlogPost)` we require that a user instance be
 passed into the `new` or `create` method when we are creating a `BlogPost`.
-That declaration sets into motion a bunch of machinery, however, that let's us
-access related objects just as you'd expect:
+That declaration sets into motion a bunch of machinery that let's us access
+related objects just as you'd expect:
 
 ```python
 blog_post_one.user      # returns the parent user object!
@@ -210,10 +210,9 @@ on the user object; note that this is derived from the name of the class by
 converting it to snake case and rendering it plural. At the moment, only
 `has_many` relationships are implemented.
 
-A given data model can have many has_many relationships, but a model can only
-belong to one parent; in other words, many-to-many relationships are not
-(yet) possible.
-
+A given data model can have several has_many relationships, but a model can
+only belong to one parent. Future work will extend available association 
+options.
 
 ### Serializing/Deserializing
 
@@ -224,8 +223,19 @@ across an http connection. We can call the `serialize_doc` method to grab a
 any children associated with a has_many relationship; these may be included by
 specifying `include_children=True`.
 
+Note that we assume that variables, functions, and classes on the Python side
+will respect PEP8 conventions — snake_cased variables, methods, attributes,
+etc., with TitleCase used for class names. Pyro's serialization/deserialization
+protocols will automatically convert between
+[Python](https://www.python.org/dev/peps/pep-0008/#naming-conventions) and
+[JavaScript](http://www.j-io.org/Javascript-Naming_Conventions)
 
-# API Application
+# The Application
 
 Okay, so we've got our data modeled. Now how do we create an API from these
-`Model` classes? We create a `pyro` `Application`.
+`Pyro`-based classes? We create a `pyro` `Application`:
+
+```python
+from pyro.basics import *
+
+app = Application(Pyro)

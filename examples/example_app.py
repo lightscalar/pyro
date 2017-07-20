@@ -1,7 +1,4 @@
 from example_models import *
-from pyro.application import *
-from pyro.database import connect_to_database
-
 
 if __name__ == '__main__':
 
