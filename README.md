@@ -55,21 +55,21 @@ available [here](https://goo.gl/pbiPSB).
 
 ### Fundamentals
 
-The `Model` class is at the core of `pyro`. It provides all the
-Create/Read/Update/Delete functionality that you might need, and more.
+The `Pyro` class is at the core of `pyro`. It handles the creation of data
+models, provides a transparent interface to the database, and even handles the
+routing of web API calls to handle the Create/Read/Update/Delete boilerplate
+functionality that you need.
 
 Before we start modeling our data, however, we need to make contact with a
 database. We assume you have a MongoDB server running somewhere. If that is not
 the case, get [MongoDB](https://goo.gl/pbiPSB) installed and running on your
-system. Then, create a database object and attach it to the `Model` class like
+system. Then, create a database object and attach it to the `Pyro` class like
 this:
 
 ```python
-from pyro.database import connect_to_database
-from pyro.model import Model
+from pyro.basics import Pyro
 
-db = connect_to_database(database_name='my_database')
-Model.attach_db(db)
+Pyro.attach_db() # without arguments, we connect to local Mongo server.
 ```
 
 This will ensure that all of our data objects have access to the common Mongo
@@ -77,7 +77,7 @@ database. Now, to model some data, we simply create a new class that inherits
 from the Model class, like this:
 
 ```python
-class User(Model):
+class User(Pyro):
     pass
 ```
 
