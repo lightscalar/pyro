@@ -274,3 +274,14 @@ For the example above, the following routes are generated:
 | DELETE | /user/<user_id> | destroy | Delete the user with id <user_id>|
 | GET | /user/<user_id>/blog_posts | index | Return list of <user_id>'s blog posts|
 | POST | /user/<user_id>/blog_posts | create | Create a new blog post belonging to <user_id>|
+| POST | /user/<user_id>/blog_posts | create | Create a new blog post belonging to <user_id>|
+| GET | /blog_posts | index  | Returns list of all users |
+| POST | /blog_posts | create | Create a new blog post |
+| GET | /blog_posts/<blog_posts_id> | show | Return the blog post with id <blog_id>|
+| DELETE | /blog_posts/<blog_posts_id> | destroy | Delete the user with id <blog_id>|
+
+These routes are similar to the default routes you'd get using a full stack web
+application framework like [Ruby on
+Rails](http://guides.rubyonrails.org/routing.html). Note that the Pyro supports
+nested routing, but only two levels deep. That is, if we created a `Comment`
+data model that was a child of a `BlogPost`, you would be able to access
