@@ -7,7 +7,7 @@ requires a Mongo database, a Flask web server, and that's about it. The goal is
 to provide a clean API for basic CRUD functionality, while serving up RESTFUL
 routes with minimal configuration. YMMV.
 
-Let's see how you might create a simple RESTFUL API. 
+Let's see how you might create a simple RESTFUL API.
 
 ```python
 from pyro.basics import *
@@ -212,7 +212,7 @@ converting it to snake case and rendering it plural. At the moment, only
 `has_many` relationships are implemented.
 
 A given data model can have several has_many relationships, but a model can
-only belong to one parent. Future work will extend available association 
+only belong to one parent. Future work will extend available association
 options.
 
 ### Serializing/Deserializing
@@ -232,7 +232,7 @@ conventions.
 # The Application
 
 Okay, so we've got our data modeled. Now how do we create an API from these
-`Pyro`-based classes? We create a `pyro` `Application`, as we did above. Let's 
+`Pyro`-based classes? We create a `pyro` `Application`, as we did above. Let's
 reproduce that example here, and discuss it in more detail.
 
 ```python
@@ -256,9 +256,15 @@ app = Application(Pyro)
 app.run()               # -> Running on http://127.0.0.1:5000/ (Press CTR+C to quit)
 ```
 
-When we create those data objects, `User` and `BlogPost
+When we create those data objects, `User` and `BlogPost`, Pyro automatically
+generates the typical RESTFUL routes that allow you to create, read, update
+and delete those resources. When we create a Pyro `Application` instance and
+run it, we boot up a webserver that serves up these RESTFUL routes — all with
+zero boilerplate!
+
 
 | First Header  | Second Header |
 | ------------  | ------------- |
 | Hello         | Goodbye       |
+g
 | Second        | Line          |
