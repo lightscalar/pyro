@@ -231,9 +231,25 @@ conventions.
 # The Application
 
 Okay, so we've got our data modeled. Now how do we create an API from these
-`Pyro`-based classes? We create a `pyro` `Application`:
+`Pyro`-based classes? We create a `pyro` `Application`, as we did above.
 
 ```python
 from pyro.basics import *
 
+# Let's create some data models.
+class User(Pyro):
+    pass
+
+class BlogPost(Pyro):
+    pass
+
+# Specify a has_many relationship between data objects.
+User.has_many(BlogPost)
+
+# Connect a database.
+Pyro.attach_db()        # defaults to locally running Mongo server...
+
+# Launch a web server.
 app = Application(Pyro)
+app.run()               # -> Running on http://127.0.0.1:5000/ (Press CTR+C to quit)
+```
