@@ -6,7 +6,7 @@ from pyro.database import connect_to_database
 if __name__ == '__main__':
 
     # Attach the default database.
-    Pyro._attach_db()
+    Pyro.attach_db()
 
     # Insert some data into the database.
     user = User.create({'name': 'Matthew J. Lewis'})
