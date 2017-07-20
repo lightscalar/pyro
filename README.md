@@ -277,11 +277,15 @@ For the example above, the following routes are generated:
 | POST | /user/<user_id>/blog_posts | create | Create a new blog post belonging to <user_id>|
 | GET | /blog_posts | index  | Returns list of all users |
 | POST | /blog_posts | create | Create a new blog post |
-| GET | /blog_posts/<blog_posts_id> | show | Return the blog post with id <blog_id>|
-| DELETE | /blog_posts/<blog_posts_id> | destroy | Delete the user with id <blog_id>|
+| GET | /blog_post/<blog_id> | show | Return the blog post with id <blog_id>|
+| DELETE | /blog_post/<blog_id> | destroy | Delete the user with id <blog_id>|
 
-These routes are similar to the default routes you'd get using a full stack web
-application framework like [Ruby on
+These routes are similar to the default routes you'd get using a RESTFUL, full
+stack web application framework like [Ruby on
 Rails](http://guides.rubyonrails.org/routing.html). Note that the Pyro supports
 nested routing, but only two levels deep. That is, if we created a `Comment`
-data model that was a child of a `BlogPost`, you would be able to access
+data model that was a child of a `BlogPost` via `BlogPost.has_many(Comment)`,
+you'd be able to access something like `/blog_post/<blog_id>/comments`, but not
+`/user/<user_id>/blog_post/<blog_id>/comments` because, well, such things are
+unwieldy and ultimately not very useful. So two levels of nesting; that's all 
+you get.
