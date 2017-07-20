@@ -258,10 +258,18 @@ app.run()               # -> Running on http://127.0.0.1:5000/ (Press CTRL+C to 
 ```
 
 When we create those data objects, `User` and `BlogPost`, Pyro automatically
-generates the typical RESTFUL routes that allow you to create, read, update
-and delete those resources. When we create a Pyro `Application` instance and
-run it, we boot up a webserver that serves up these RESTFUL routes — all with
-zero boilerplate!
+generates the typical RESTFUL routes that allow you to create, read, update and
+delete those resources, creates appropriate collections in the Mongo database,
+and wires up the model relationships, if any are declared. When we create a
+Pyro `Application` instance and run it, we boot up a webserver that serves up
+these RESTFUL routes — all with zero boilerplate!
+
+For the example above, the following routes are generated:
+
+| HTTP Verb | Path | Action Method | What Does It Do? |
+| --------  | ---- | ------------- | ---------------- |
+| GET | /users | index  | Returns list of all users |
+
 
 | First Header  | Second Header |
 | ------------  | ------------- |
