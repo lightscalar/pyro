@@ -5,8 +5,8 @@ class User(Pyro):
     '''A simple user class.'''
 
     @classmethod
-    def after_index(cls):
-        print(len(cls._docs))
+    def before_index(cls, params):
+        print(params)
 
     @classmethod
     def after_show(cls):

@@ -3,9 +3,10 @@
 ## Introduction
 
 PYRO is an opinionated framework for quickly building Web APIs using Flask. It
-requires a [Mongo](https://www.mongodb.com/) database, a [Flask](http://flask.pocoo.org/), and that's about it. The goal is
-to provide a clean API for basic CRUD functionality, while serving up RESTFUL
-routes with minimal configuration. YMMV.
+requires a [Mongo](https://www.mongodb.com/) database, a
+[Flask](http://flask.pocoo.org/), and that's about it. The goal is to provide a
+clean API for basic CRUD functionality, while serving up RESTFUL routes with
+minimal configuration. YMMV.
 
 Let's see how you might create a simple RESTFUL API.
 
@@ -293,19 +294,32 @@ you'd be able to access something like `/blog_post/<blog_id>/comments`, but not
 unwieldy and ultimately not very useful. So one levels of nested routing;
 that's all you get.
 
-As a concrete example, let's create a `User` instance via our API. To do this, we
-simply `POST` some data to the server running at `http://localhost:5000`. We
-can do this at the command line using `curl`:
+As a concrete example, let's create a `User` instance via our API. To do this,
+we simply `POST` some data to the server running at `http://localhost:5000`. We
+can do this at the command line using the excellent Python library
+[requests](http://docs.python-requests.org/en/master/):
 
-```unix
-curl -H 'Content-Type: application/json' -X POST -d '{"name": "Matthew"}' http:localhost:5000/users
+```python
+import requests
+requests.post('http://localhost:5000/users', data={'name': 'Matthew', 'age': 41})
 ```
 
 Pyro routes this request to the appropriate action, creates a new `User`
 object, saves it to the Mongo database, and returns a JSON version of the
 object, augmented with a new primary key, `_id`. Making API requests to the
-other routes work as expected.
+other routes work as expected. To see the list of `User`s now available:
 
+```python
+import requests
+requests.get('http://localhost:5000/users') 
+> [
+>   {
+>     "_id": "5972105e378acd73a73a1d62", 
+>     "name": "Matthew J. Lewis"
+>     "age": 41
+>   }, 
+> ]
+```
 ### But I Want to Do Other Stuff
 
 

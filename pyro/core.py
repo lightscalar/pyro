@@ -10,7 +10,7 @@ class PyroMeta(type):
     def __new__(cls, name, parents, dct):
         dct['_singular_name'] = camel_to_snake(name)
         dct['_plural_name'] = plural(camel_to_snake(name))
-        dct['_parents'] = []
+        dct['_parent'] = None
         dct['_children'] = []
         dct['_doc'] = None
         return super(PyroMeta, cls).__new__(cls, name, parents, dct)
@@ -51,64 +51,71 @@ class Pyro(object, metaclass=PyroMeta):
         methods = ['GET']
         callback = cls._index
         routes[route_name] = {'route': route, 'methods': methods,\
-                              'callback': callback}
+            'callback': callback}
         # show
         route_name = '{:s}.show'.format(cls._singular_name)
         route = '/{:s}/<resource_id>'.format(cls._singular_name)
         methods = ['GET']
         callback = cls._show
         routes[route_name] = {'route': route, 'methods': methods,\
-                              'callback': callback}
+            'callback': callback}
         # create
         route_name = '{:s}.create'.format(cls._plural_name)
         route = '/{:s}'.format(cls._plural_name)
         methods = ['POST']
         callback = cls._create
         routes[route_name] = {'route': route, 'methods': methods,\
-                              'callback': callback}
+            'callback': callback}
         # update
         route_name = '{:s}.update'.format(cls._singular_name)
         route = '/{:s}/<resource_id>'.format(cls._singular_name)
         methods = ['PUT']
         callback = cls._update
         routes[route_name] = {'route': route, 'methods': methods,\
-                              'callback': callback}
+            'callback': callback}
         # destroy
         route_name = '{:s}.destroy'.format(cls._singular_name)
         route = '/{:s}/<resource_id>'.format(cls._singular_name)
         methods = ['DELETE']
         callback = cls._destroy
         routes[route_name] = {'route': route, 'methods': methods,\
-                              'callback': callback}
+            'callback': callback}
+
         # Are there any nested routes? Let's check.
         for child in cls._children:
-            # index - only two levels of nesting allowed!
+            # index - only one levels of nesting allowed!
             route_name = '{:s}.{:s}.index'.format(cls._singular_name,\
-                    child._plural_name)
+                child._plural_name)
             route = '/{:s}/<resource_id>/{:s}'.format(cls._singular_name,\
-                    child._plural_name)
+                child._plural_name)
             methods = ['GET']
-            callback = cls._index
+            callback = child._index
             routes[route_name] = {'route': route, 'methods': methods,\
-                                  'callback': callback}
+                'callback': callback}
         return routes
 
     # -------------- CONTROLLER METHODS -----------------------------
     @classmethod
     def _index(cls, resource_id=None):
         '''List all resources.'''
-        cls.before_index() # before hook
+        params = {}
+        if resource_id: # we're listing a child resource.
+            params[cls._parent._foreign_key()] = resource_id
+        params['data'] = request.json
+        cls.before_index(params) # before hook
         if resource_id: # a nested resource!
+            debug()
             endpoint = request.url_rule.endpoint.split('.')
             cls._obj = cls.find_by_id(resource_id)
             cls._docs = cls._obj.__dict__[endpoint[1]]()
         else:
             cls._docs = cls.all()
-        cls.after_index() # after hook
+        params['docs'] = cls._docs
+        cls.after_index(params) # after hook
         return cls._to_response(cls._docs)
 
     @classmethod
-    def _create(cls):
+    def _create(cls, resource_id=None):
         '''Create a new resource.'''
         cls._request = request
         cls.before_create() # before hook
@@ -142,43 +149,43 @@ class Pyro(object, metaclass=PyroMeta):
 
     # -------------- HOOK METHODS ------------------------------------
     @classmethod
-    def before_index(cls):
+    def before_index(cls, params):
         pass
 
     @classmethod
-    def after_index(cls):
+    def after_index(cls, params):
         pass
 
     @classmethod
-    def before_create(cls):
+    def before_create(cls, params):
         pass
 
     @classmethod
-    def after_create(cls):
+    def after_create(cls, params):
         pass
 
     @classmethod
-    def before_show(cls):
+    def before_show(cls, params):
         pass
 
     @classmethod
-    def after_show(cls):
+    def after_show(cls, params):
         pass
 
     @classmethod
-    def before_update(cls):
+    def before_update(cls, params):
         pass
 
     @classmethod
-    def after_update(cls):
+    def after_update(cls, params):
         pass
 
     @classmethod
-    def before_destroy(cls):
+    def before_destroy(cls, params):
         pass
 
     @classmethod
-    def after_destroy(cls):
+    def after_destroy(cls, params):
         pass
     # -------------- END HOOK METHODS--------------------------------
 
@@ -202,16 +209,16 @@ class Pyro(object, metaclass=PyroMeta):
     @classmethod
     def validate_associations(cls, doc, parent_instance):
         '''Ensure that has_many relationships are working.'''
-        if not (len(cls._parents)>0): # no parents
+        if cls._parent is None: # no parent exists
             return doc
         if not parent_instance:
-            if cls._parents[0]._foreign_key() in doc: # already assigned
+            if cls._parent._foreign_key() in doc: # already assigned
                 return doc
-        elif parent_instance.__class__ in cls._parents: # assign now
+        elif parent_instance.__class__ is cls._parent: # assign now
             doc[parent_instance._foreign_key()] = parent_instance._id
             return doc
         error = ('This class must belong to an instance of the {:s} class').\
-                format(snake_to_class(cls._parents[0]._singular_name))
+                format(snake_to_class(cls._parent._singular_name))
         raise ValueError(error)
 
     @classmethod
@@ -237,6 +244,12 @@ class Pyro(object, metaclass=PyroMeta):
         return jsonify(serialize(package))
 
     @classmethod
+    def find_where(cls, query):
+        '''Find docs in collection satisfying query.'''
+        collection = cls._db[cls._plural_name]
+        return list(collection.find(query))
+
+    @classmethod
     def find_by_id(cls, _id):
         _id = ObjectId(_id)
         doc = find_document(_id, cls._db[cls._plural_name])
@@ -255,17 +268,17 @@ class Pyro(object, metaclass=PyroMeta):
     @classmethod
     def has_many(cls, child_class):
         '''Specify a one-to-many relationship between data models.'''
-        child_class._parents.append(cls)
+        child_class._parent = cls
         cls._children.append(child_class)
 
     def __init__(self, doc):
         '''Consume a document and attach attributes as properties.'''
         self.__dict__.update(doc)
 
-    def _find_parents(self):
+    def _find_parent(self):
         '''Find and attach parent.'''
         if self.has_parent:
-            ParentClass = self._parents[0]
+            ParentClass = self._parent
             foreign_key = ParentClass._foreign_key()
             parent_obj = ParentClass.find_by_id(self.__dict__[foreign_key])
             self.__dict__[ParentClass._singular_name] = parent_obj
@@ -287,7 +300,7 @@ class Pyro(object, metaclass=PyroMeta):
     @property
     def has_parent(self):
         '''Does this model belong to another model?'''
-        return len(self._parents)>0
+        return self._parent is not None
 
     def save(self):
         '''Save the current document, if there is one.'''
@@ -301,7 +314,7 @@ class Pyro(object, metaclass=PyroMeta):
 
     def _finally(self):
         '''Clean up, sideload parents/children/etc.'''
-        self._find_parents()
+        self._find_parent()
         self._find_children()
 
     def _save_new_doc(self):
