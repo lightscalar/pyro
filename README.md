@@ -297,9 +297,10 @@ this at the command line using `curl`:
 curl -H 'Content-Type: application/json' -X POST -d '{"name": "Matthew"}' http:localhost:5000/users
 ```
 
-Pyro routes this request appropriately, creates a new `User` object, saves it 
-to the Mongo database, and returns the object, augmented with its new primary
-key, `_id`.
+Pyro routes this request appropriately, creates a new `User` object, saves it
+to the Mongo database, and returns a JSON version of the object, augmented with
+its new primary key, `_id`. Making API requests to the other routes should work
+as expected.
 
 ### But I Want to Do Other Stuff
 
