@@ -271,7 +271,7 @@ these RESTFUL routes — all with zero boilerplate!
 For the example above, the following routes are generated:
 
 | HTTP Verb | Path | Action Method | What Does It Do? |
-| --------  | ---- | ------------- | ---------------- |
+| :-------  | :--- | :------------ | :--------------- |
 | GET | /users | index  | Returns list of all users |
 | POST | /users | create | Create a new user
 | GET | /user/<user_id> | show | Return the user with id <user_id>|
