@@ -291,10 +291,10 @@ you get.
 
 As a concrete example, let's create a user instance. To do this, we simply
 `POST` some data to the server running at `http://localhost:5000`. We can do
-this at the command line using curl:
+this at the command line using `curl`:
 
 ```unix
-curl -H 'Content-Type: application/json' -X POST -d '{"name": "Matthew"}' htto:localhost:5000/users
+curl -H 'Content-Type: application/json' -X POST -d '{"name": "Matthew"}' http:localhost:5000/users
 ```
 
 ### But I Want to Do Other Stuff
