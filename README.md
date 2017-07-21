@@ -3,7 +3,7 @@
 ## Introduction
 
 PYRO is an opinionated framework for quickly building Web APIs using Flask. It
-requires a Mongo database, a Flask web server, and that's about it. The goal is
+requires a [Mongo](https://www.mongodb.com/) database, a [Flask](http://flask.pocoo.org/), and that's about it. The goal is
 to provide a clean API for basic CRUD functionality, while serving up RESTFUL
 routes with minimal configuration. YMMV.
 
@@ -286,12 +286,12 @@ For the example above, the following routes are generated:
 These routes are similar to the default routes you'd get using a RESTFUL, full
 stack web application framework like [Ruby on
 Rails](http://guides.rubyonrails.org/routing.html). Note that Pyro supports
-nested routing, but only two levels deep. That is, if we created a `Comment`
+nested routing, but only one level deep. That is, if we created a `Comment`
 data model that was a child of a `BlogPost` via `BlogPost.has_many(Comment)`,
 you'd be able to access something like `/blog_post/<blog_id>/comments`, but not
 `/user/<user_id>/blog_post/<blog_id>/comments` because, well, such things are
-unwieldy and ultimately not very useful. So two levels of nesting; that's all
-you get.
+unwieldy and ultimately not very useful. So one levels of nested routing;
+that's all you get.
 
 As a concrete example, let's create a `User` instance via our API. To do this, we
 simply `POST` some data to the server running at `http://localhost:5000`. We
