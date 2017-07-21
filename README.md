@@ -312,13 +312,13 @@ other routes work as expected. To see the list of `User`s now available:
 ```python
 import requests
 requests.get('http://localhost:5000/users') 
-> [
->   {
->     "_id": "5972105e378acd73a73a1d62", 
->     "name": "Matthew J. Lewis"
->     "age": 41
->   }, 
-> ]
+# [
+#   {
+#     "_id": "5972105e378acd73a73a1d62", 
+#     "name": "Matthew"
+#     "age": 41
+#   }, 
+# ]
 ```
 ### But I Want to Do Other Stuff
 
