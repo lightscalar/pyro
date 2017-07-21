@@ -293,7 +293,7 @@ you'd be able to access something like `/blog_post/<blog_id>/comments`, but not
 unwieldy and ultimately not very useful. So two levels of nesting; that's all
 you get.
 
-As a concrete example, let's create a user instance via our API. To do this, we
+As a concrete example, let's create a `User` instance via our API. To do this, we
 simply `POST` some data to the server running at `http://localhost:5000`. We
 can do this at the command line using `curl`:
 
