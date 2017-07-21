@@ -310,7 +310,6 @@ object, augmented with a new primary key, `_id`. Making API requests to the
 other routes work as expected. To see the list of `User`s now available:
 
 ```python
-import requests
 requests.get('http://localhost:5000/users') 
 # [
 #   {
