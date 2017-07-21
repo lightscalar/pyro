@@ -285,7 +285,7 @@ For the example above, the following routes are generated:
 
 These routes are similar to the default routes you'd get using a RESTFUL, full
 stack web application framework like [Ruby on
-Rails](http://guides.rubyonrails.org/routing.html). Note that the Pyro supports
+Rails](http://guides.rubyonrails.org/routing.html). Note that Pyro supports
 nested routing, but only two levels deep. That is, if we created a `Comment`
 data model that was a child of a `BlogPost` via `BlogPost.has_many(Comment)`,
 you'd be able to access something like `/blog_post/<blog_id>/comments`, but not
