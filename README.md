@@ -227,7 +227,9 @@ specifying `include_children=True`.
 Pyro's serialization/deserialization protocols will automatically convert
 between [Python](https://www.python.org/dev/peps/pep-0008/#naming-conventions)
 and [JavaScript](http://www.j-io.org/Javascript-Naming_Conventions) naming
-conventions.
+conventions. For the most part, you won't have to worry about serializing and
+deserializing data, as Pyro handles all this. You'll only have to worry about
+what is going on there if you need to diverge from the default behavior.
 
 ## The Application
 
@@ -289,18 +291,18 @@ you'd be able to access something like `/blog_post/<blog_id>/comments`, but not
 unwieldy and ultimately not very useful. So two levels of nesting; that's all
 you get.
 
-As a concrete example, let's create a user instance. To do this, we simply
-`POST` some data to the server running at `http://localhost:5000`. We can do
-this at the command line using `curl`:
+As a concrete example, let's create a user instance via our API. To do this, we
+simply `POST` some data to the server running at `http://localhost:5000`. We
+can do this at the command line using `curl`:
 
 ```unix
 curl -H 'Content-Type: application/json' -X POST -d '{"name": "Matthew"}' http:localhost:5000/users
 ```
 
-Pyro routes this request appropriately, creates a new `User` object, saves it
-to the Mongo database, and returns a JSON version of the object, augmented with
-its new primary key, `_id`. Making API requests to the other routes should work
-as expected.
+Pyro routes this request to the appropriate action, creates a new `User`
+object, saves it to the Mongo database, and returns a JSON version of the
+object, augmented with a new primary key, `_id`. Making API requests to the
+other routes work as expected.
 
 ### But I Want to Do Other Stuff
 
