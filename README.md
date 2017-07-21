@@ -1,4 +1,4 @@
-# PYRO — A Lightweight Framework for Quickly Developing Web APIs in Flask
+# PYRO — A Lightweight Framework for Quickly Developing Web APIs with Flask
 
 ## Introduction
 
@@ -233,7 +233,7 @@ conventions.
 
 Okay, so we've got our data modeled. Now how do we create an API from these
 `Pyro`-based classes? We create a Pyro `Application` instance, as we did above.
-Let's reproduce that example here, and discuss in greater detail what is 
+Let's reproduce that example here, and discuss in greater detail what is
 going on:
 
 ```python
