@@ -228,8 +228,8 @@ Pyro's serialization/deserialization protocols will automatically convert
 between [Python](https://www.python.org/dev/peps/pep-0008/#naming-conventions)
 and [JavaScript](http://www.j-io.org/Javascript-Naming_Conventions) naming
 conventions. For the most part, you won't have to worry about serializing and
-deserializing data, as Pyro handles all this. You'll only have to worry about
-what is going on there if you need to diverge from the default behavior.
+deserializing data, as Pyro handles all this. You'll only have to be concerned
+about what is going on there if you need to diverge from the default behavior.
 
 ## The Application
 
