@@ -274,7 +274,6 @@ For the example above, the following routes are generated:
 | DELETE | /user/<user_id> | destroy | Delete the user with id <user_id>|
 | GET | /user/<user_id>/blog_posts | index | Return list of <user_id>'s blog posts|
 | POST | /user/<user_id>/blog_posts | create | Create a new blog post belonging to <user_id>|
-| POST | /user/<user_id>/blog_posts | create | Create a new blog post belonging to <user_id>|
 | GET | /blog_posts | index  | Returns list of all users |
 | POST | /blog_posts | create | Create a new blog post |
 | GET | /blog_post/<blog_id> | show | Return the blog post with id <blog_id>|
@@ -287,5 +286,17 @@ nested routing, but only two levels deep. That is, if we created a `Comment`
 data model that was a child of a `BlogPost` via `BlogPost.has_many(Comment)`,
 you'd be able to access something like `/blog_post/<blog_id>/comments`, but not
 `/user/<user_id>/blog_post/<blog_id>/comments` because, well, such things are
-unwieldy and ultimately not very useful. So two levels of nesting; that's all 
+unwieldy and ultimately not very useful. So two levels of nesting; that's all
 you get.
+
+As a concrete example, let's create a user instance. To do this, we simply
+`POST` some data to the server running at `http://localhost:5000`. We can do
+this at the command line using curl:
+
+```unix
+curl -H 'Content-Type: application/json' -X POST -d '{"name": "Matthew"}' htto:localhost:5000/users
+```
+
+### But I Want to Do Other Stuff
+
+
