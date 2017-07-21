@@ -229,7 +229,9 @@ between [Python](https://www.python.org/dev/peps/pep-0008/#naming-conventions)
 and [JavaScript](http://www.j-io.org/Javascript-Naming_Conventions) naming
 conventions. For the most part, you won't have to worry about serializing and
 deserializing data, as Pyro handles all this. You'll only have to be concerned
-about what is going on there if you need to diverge from the default behavior.
+about what is going on there if you need to diverge from the default behavior,
+and the default behavior is exceedingly good behavior, so it is not clear why
+you would do that.
 
 ## The Application
 
