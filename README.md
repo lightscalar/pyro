@@ -271,7 +271,7 @@ these RESTFUL routes — all with zero boilerplate!
 
 For the example above, the following routes are generated:
 
-| HTTP Verb | Path | Action Method | What Does It Do? |
+| HTTP Verb | Path | API Action | What Does It Do? |
 | :-------  | :--- | :------------ | :--------------- |
 | GET | /users | index  | Returns list of all users |
 | POST | /users | create | Create a new user
@@ -322,4 +322,30 @@ requests.get('http://localhost:5000/users')
 
 ### Oh, But I Want to Do Other Stuff
 
+Of course you do. CRUD is necessary but not sufficient. And that is where
+*hooks* come in. Before and after each API action is taken, and before and
+after any model action is taken, Pyro calls a **hook method**. These hook
+methods allow the user to intercept data as it flows through the Pyro API to
+the database, process it, augment it with more data from external APIs or
+libraries or — well, whatever, really, since we're working with Python — and
+then let Pyro carry on with its boilerplate business.
 
+For example, suppose you wanted to add a timestamp to every user that is 
+created. This can be accomplished by overriding the `User` model's 
+`before_save_model` method:
+
+```python
+from datetime import datetime
+from pyro.basics import *
+class User(Pyro):
+    def before_save_model(self):
+        self.current_time = str(datetime.now())
+```
+
+Et voila! Now your model has the `current_time` attribute. Since we intercepted 
+the Pyro object before it was saved, this new attribute will be saved to the
+database.
+
+Will all of this scale to super complex applications? Probably not. Pyro is
+better suited to getting something up and running quickly, rather than
+providing and excellent platform for re-implementing Facebook.
