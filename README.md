@@ -356,8 +356,7 @@ summarizes the available model hooks.
 
 | Hook Method | Description |
 |-------------|-------------|
-| `before_save_model` | Called after the model has been instantiated, but 
-before it's committed to the database.|
+| `before_save_model` | Called after the model has been instantiated, but before it's committed to the database.|
 } `after_save_model` | Called after the model has been committed to the database. |
 
 
