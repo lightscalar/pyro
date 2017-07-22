@@ -324,15 +324,20 @@ requests.get('http://localhost:5000/users')
 
 Of course you do. CRUD is necessary but not sufficient. And that is where
 *hooks* come in. Before and after each API action is taken, and before and
-after any model action is taken, Pyro calls a **hook method**. These hook
-methods allow the user to intercept data as it flows through the Pyro API to
-the database, process it, augment it with more data from external APIs or
-libraries or — well, whatever, really, since we're working with Python — and
-then let Pyro carry on with its boilerplate business.
+after any model action is taken, Pyro calls a **hook method**. By default,
+these hook methods do nothing at all. But by declaring your own hooks, you may
+intercept data as it flows through the Pyro API to the database, process it,
+augment it with more data from external APIs or libraries or — well, whatever,
+really, since we're working with Python — and then let Pyro carry on with its
+boilerplate business. There are two distinct types of hooks in Pyro: Model
+Hooks, and Action Hooks. Let's start with model hooks.
 
-For example, suppose you wanted to add a timestamp to every user that is 
-created. This can be accomplished by overriding the `User` model's 
-`before_save_model` method:
+### Model Hooks
+
+Model hooks allow you to jump inside an instance of your data object whenever
+something interesting is about to happen, or has just happened. For example,
+suppose you wanted to add a timestamp to every user that is created. This can
+be accomplished by overriding the `User` model's `before_save_model` method:
 
 ```python
 from datetime import datetime
@@ -344,7 +349,13 @@ class User(Pyro):
 
 Et voila! Now your model has the `current_time` attribute. Since we intercepted 
 the Pyro object before it was saved, this new attribute will be saved to the
-database.
+database. If you'd like to work with the data after it has been saved to the
+database, simply override the `after_model_save` method. The following table
+summarizes the available model hooks.
+
+| Hook Method | Description |
+|-------------|-------------|
+| `before_save_model` | Called after the model has been instantiated. |
 
 Will all of this scale to super complex applications? Probably not. Pyro is
 better suited to getting something up and running quickly, rather than
