@@ -342,6 +342,7 @@ be accomplished by overriding the `User` model's `before_save_model` method:
 ```python
 from datetime import datetime
 from pyro.basics import *
+
 class User(Pyro):
     def before_save_model(self):
         self.current_time = str(datetime.now())
@@ -355,7 +356,9 @@ summarizes the available model hooks.
 
 | Hook Method | Description |
 |-------------|-------------|
-| `before_save_model` | Called after the model has been instantiated, but before it's committed to the database.|
+| `before_save_model` | Called after the model has been instantiated, but 
+before it's committed to the database.|
+} `after_save_model` | Called after the model has been committed to the database. |
 
 
 Will all of this scale to super complex applications? Probably not. Pyro is
