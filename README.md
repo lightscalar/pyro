@@ -355,7 +355,7 @@ summarizes the available model hooks.
 
 | Hook Method | Description |
 |-------------|-------------|
-| `before_save_model` | Called after the model has been instantiated, but before committed to the database.|
+| `before_save_model` | Called after the model has been instantiated, but before it's committed to the database.|
 
 
 Will all of this scale to super complex applications? Probably not. Pyro is
