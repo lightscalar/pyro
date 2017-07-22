@@ -43,6 +43,12 @@ def snake_to_camel(snake):
     return re.sub(r'(?!^)_([a-zA-Z])', lambda m: m.group(1).upper(), snake)
 
 
+def snake_to_class(string):
+    '''Turn snake_case into ClassCase.'''
+    cameled = snake_to_camel(string)
+    return cameled[0].upper() + cameled[1:]
+
+
 def deserialize(obj, key=None):
     '''Return object if it is simple; otherwise recursively iterate through.'''
     if (type(obj) is list): # loop through elements, if list.
@@ -106,7 +112,40 @@ class ForeignQuery(object):
             return list(children_docs)
 
 
-def snake_to_class(string):
-    '''Turn snake_case into ClassCase.'''
-    cameled = snake_to_camel(string)
-    return cameled[0].upper() + cameled[1:]
+def assemble_params(Class, action, resource_id, request):
+    '''Create a convenient parameter dict for hook methods.'''
+    params = {}
+    if resource_id is not None:
+        if action in ['index', 'create'] and resource_id:
+            resource_name = Class._parent._foreign_key()
+        else:
+            resource_name = Class._foreign_key()
+        params[resource_name] = resource_id
+    params['action'] = action
+    params['request_data'] = request.json
+    params['request'] = request
+    params['class'] = Class
+    return params
+
+
+def clean_document(doc):
+    '''Eliminate query classes from the documents. (HACK!)'''
+    eliminables = []
+    for k,v in doc.items():
+        if str(type(v)) == "<class 'pyro.utils.ForeignQuery'>":
+            eliminables.append(k)
+    for k in eliminables:
+        del doc[k]
+    return doc
+
+
+def create_model_params(cls=None, obj=None,  doc=None, parent=None):
+    '''Create params dict for model hooks.'''
+    params = {}
+    params['Class'] = cls
+    params[cls._singular_name] = doc
+    if obj:
+        params[obj._singular_name] = obj
+    if parent is not None:
+        params[parent_instance._singular_name] = parent_instance
+    return params

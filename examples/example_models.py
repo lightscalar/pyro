@@ -1,22 +1,22 @@
 from pyro.basics import *
 
 
-class User(Pyro):
+class Author(Pyro):
     '''A simple user class.'''
 
-    @classmethod
-    def before_index(cls, params):
+    @staticmethod
+    def before_index(params):
         print(params)
 
-    @classmethod
-    def after_show(cls):
-        print (cls._obj._singular_name)
+    @staticmethod
+    def after_show(params):
+        print (params['user'].name)
 
 
-class Article(Pyro):
+class Book(Pyro):
     '''An article class.'''
     pass
 
 
 '''Define a has-many relationship between these guys.'''
-User.has_many(Article)
+Author.has_many(Book)

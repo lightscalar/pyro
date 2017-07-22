@@ -296,7 +296,7 @@ that's all you get.
 
 As a concrete example, let's create a `User` instance via our API. To do this,
 we simply `POST` some data to the server running at `http://localhost:5000`. We
-can do this at the command line using the excellent Python library
+can do this in Python using the excellent Python library
 [requests](http://docs.python-requests.org/en/master/):
 
 ```python

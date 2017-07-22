@@ -1,17 +1,14 @@
 import requests as rq
 from example_models import *
 
-# Clean up the database.
-Pyro.attach_db()
-User.delete_all()
-Article.delete_all()
-
-user = User.create({'firstName': 'Hugo', 'lastName': 'Lewis'})
-article = Article.create({'title': 'Bus'}, user)
-
 def url(x):
     base_url = 'http://localhost:5000'
     return '{:s}/{:s}'.format(base_url, x)
 
-data = {'firstName': 'Matthew J. Lewis', 'age': 41}
-rq.post(url('users'), data=data)
+data = {'firstName': 'Matthew', 'lastName': 'Lewis', 'age': 41}
+resp = rq.post(url('authors'), json=data)
+author = resp.json()
+author_url = url('author/{:s}'.format(author['_id']))
+post_book_url = url('author/{:s}/books'.format(author['_id']))
+book = rq.post(post_book_url, json={'title': 'Great Gatsby'})
+

@@ -83,7 +83,7 @@ class Pyro(object, metaclass=PyroMeta):
 
         # Are there any nested routes? Let's check.
         for child in cls._children:
-            # index - only one levels of nesting allowed!
+            # index - only one level of nesting allowed!
             route_name = '{:s}.{:s}.index'.format(cls._singular_name,\
                 child._plural_name)
             route = '/{:s}/<resource_id>/{:s}'.format(cls._singular_name,\
@@ -92,100 +92,135 @@ class Pyro(object, metaclass=PyroMeta):
             callback = child._index
             routes[route_name] = {'route': route, 'methods': methods,\
                 'callback': callback}
+            # create
+            route_name = '{:s}.{:s}.index'.format(cls._singular_name,\
+                child._plural_name)
+            route = '/{:s}/<resource_id>/{:s}'.format(cls._singular_name,\
+                child._plural_name)
+            methods = ['POST']
+            callback = child._create
+            routes[route_name] = {'route': route, 'methods': methods,\
+                'callback': callback}
+
         return routes
 
     # -------------- CONTROLLER METHODS -----------------------------
     @classmethod
     def _index(cls, resource_id=None):
         '''List all resources.'''
-        params = {}
-        if resource_id: # we're listing a child resource.
-            params[cls._parent._foreign_key()] = resource_id
-        params['data'] = request.json
+        params = assemble_params(cls, 'index', resource_id, request)
         cls.before_index(params) # before hook
         if resource_id: # a nested resource!
-            debug()
-            endpoint = request.url_rule.endpoint.split('.')
-            cls._obj = cls.find_by_id(resource_id)
-            cls._docs = cls._obj.__dict__[endpoint[1]]()
+            query = dict([(cls._parent._foreign_key(), ObjectId(resource_id))])
+            cls._docs = cls.find_where(query)
         else:
             cls._docs = cls.all()
-        params['docs'] = cls._docs
+        params[cls._plural_name] = cls._docs
         cls.after_index(params) # after hook
         return cls._to_response(cls._docs)
 
     @classmethod
     def _create(cls, resource_id=None):
         '''Create a new resource.'''
-        cls._request = request
-        cls.before_create() # before hook
-        cls._obj = cls.create(request.json)
-        cls.after_create() # after hook
+        params = assemble_params(cls, 'create', resource_id, request)
+        cls.before_create(params) # before hook
+        if resource_id is not None: # nested create!
+            parent = cls._parent.find_by_id(resource_id)
+            cls._obj = cls.create(request.json, parent)
+        else:
+            cls._obj = cls.create(request.json)
+        params[cls._singular_name] = cls._obj
+        cls.after_create(params) # after hook
         return cls._to_response(cls._obj._doc)
 
     @classmethod
     def _show(cls, resource_id):
         '''Find the specified resource'''
-        cls._resource_id = resource_id
-        cls.before_show() # before hook
-        cls._obj = cls.find_by_id(cls._resource_id)
-        cls.after_show() # after hook
-        return cls._to_response(cls._obj._doc)
+        params = assemble_params(cls, 'show', resource_id, request)
+        cls.before_show(params) # before hook
+        cls._obj = cls.find_by_id(resource_id)
+        if cls._obj:
+            resp = cls._to_response(cls._obj._doc)
+            params[cls._singular_name] = cls._obj
+            params['status_code'] = 200
+        else:
+            resp = jsonify({})
+            params['status_code'] = 404
+        cls.after_show(params) # after hook
+        return (resp, params['status_code'], {})
 
     @classmethod
     def _destroy(cls, resource_id):
         '''Delete the specified resource.'''
-        cls._resource_id = resource_id
-        cls.before_destroy() # before hook
-        cls.after_destroy() # after hook
+        params = assemble_params(cls, 'destroy', resource_id, request)
+        cls.before_destroy(params) # before hook
+        cls._obj = cls.find_by_id(resource_id)
+        if cls._obj:
+            params[cls._obj._singular_name] = cls._obj
+            cls._obj.delete()
+            params['status_code'] = 200
+        else:
+            params['status_code'] = 404
+        cls.after_destroy(params) # after hook
+        return (jsonify({}), params['status_code'], {})
 
     @classmethod
     def _update(cls, resource_id):
         '''Update the specified resource.'''
-        cls._resource_id = resource_id
-        cls.before_update() # before hook
-        cls.after_update() # after hook
+        params = assemble_params(cls, 'update', resource_id, request)
+        cls.before_update(params) # before hook
+        cls._obj = cls.find_by_id(resource_id)
+        if cls._obj:
+            cls._obj.__dict__.update(request.json)
+            cls._obj.save()
+            resp = cls._to_response(cls._doc)
+            params[cls._obj._singular_name] = cls._obj
+            params['status_code'] = status_code = 200
+        else:
+            params['status_code'] = status_code = 404
+        cls.after_update(params) # after hook
+        return (resp, params['status_code'], {})
     # -------------- END CONTROLLER METHODS --------------------------
 
     # -------------- HOOK METHODS ------------------------------------
-    @classmethod
-    def before_index(cls, params):
+    @staticmethod
+    def before_index(params):
         pass
 
-    @classmethod
-    def after_index(cls, params):
+    @staticmethod
+    def after_index(params):
         pass
 
-    @classmethod
-    def before_create(cls, params):
+    @staticmethod
+    def before_create(params):
         pass
 
-    @classmethod
-    def after_create(cls, params):
+    @staticmethod
+    def after_create(params):
         pass
 
-    @classmethod
-    def before_show(cls, params):
+    @staticmethod
+    def before_show(params):
         pass
 
-    @classmethod
-    def after_show(cls, params):
+    @staticmethod
+    def after_show(params):
         pass
 
-    @classmethod
-    def before_update(cls, params):
+    @staticmethod
+    def before_update(params):
         pass
 
-    @classmethod
-    def after_update(cls, params):
+    @staticmethod
+    def after_update(params):
         pass
 
-    @classmethod
-    def before_destroy(cls, params):
+    @staticmethod
+    def before_destroy(params):
         pass
 
-    @classmethod
-    def after_destroy(cls, params):
+    @staticmethod
+    def after_destroy(params):
         pass
     # -------------- END HOOK METHODS--------------------------------
 
@@ -194,9 +229,9 @@ class Pyro(object, metaclass=PyroMeta):
         '''Create a new object, but do not save to database.'''
         cls._doc = deserialize(doc)
         obj = cls(cls._doc)
-        obj.before_new()
+        obj.before_new_model()
         cls.validate_associations(cls._doc, parent_instance)
-        obj.after_new()
+        obj.after_new_model()
         return obj
 
     @classmethod
@@ -254,7 +289,7 @@ class Pyro(object, metaclass=PyroMeta):
         _id = ObjectId(_id)
         doc = find_document(_id, cls._db[cls._plural_name])
         if doc is None:
-            raise ValueError('Document is not in the database')
+            return False
         else:
             obj = cls.new(doc)
             obj._finally()
@@ -289,14 +324,6 @@ class Pyro(object, metaclass=PyroMeta):
             self.__dict__[ChildClass._plural_name] = ForeignQuery(self,\
                     ChildClass)
 
-    def _sync_to_doc(self):
-        '''Sync object attributes to the document.'''
-        self.__dict__.update(self._doc)
-
-    def _sync_to_obj(self):
-        '''Sync document to the attributes.'''
-        self._doc.__update(self.__dict__)
-
     @property
     def has_parent(self):
         '''Does this model belong to another model?'''
@@ -304,7 +331,6 @@ class Pyro(object, metaclass=PyroMeta):
 
     def save(self):
         '''Save the current document, if there is one.'''
-        collection = self._db[self._plural_name]
         self._doc.update(self.__dict__)
         if self.doc_exists:
             self._update_existing_doc()
@@ -319,25 +345,26 @@ class Pyro(object, metaclass=PyroMeta):
 
     def _save_new_doc(self):
         '''Save new document to the database.'''
-        self.before_save() # before hook
+        self.before_save_model() # before hook
         response = self._db[self._plural_name].insert_one(self._doc)
         self._doc['_id'] = response.inserted_id
         self.__dict__.update(self._doc)
-        self.after_save() # after hook
+        self.after_save_model() # after hook
 
     def _update_existing_doc(self):
         '''Update an existing document.'''
-        self.before_update() # before hook
+        self.before_update_model() # before hook
         self._doc.update(self.__dict__)
+        self._doc = clean_document(self._doc)
         update_document(self._doc, self._db[self._plural_name])
-        self.after_update() # after hook
+        self.after_update_model() # after hook
 
     def delete(self):
         '''Delete the current document.'''
-        self.before_delete() # before hook
+        self.before_delete_model() # before hook
         collection = self._db[self._plural_name]
         collection.delete_one(qwrap(self._id))
-        self.after_delete() # after hook
+        self.after_delete_model() # after hook
 
     def serialize(self, include_children=False):
         '''Prepare document for transport over HTTP.'''
@@ -353,34 +380,34 @@ class Pyro(object, metaclass=PyroMeta):
         '''Does the document exist in the database?'''
         return '_id' in self._doc # if it has an ID, it has been saved
 
-    def before_new(self):
+    def before_new_model(self):
         '''Override to add functionality.'''
         pass
 
-    def after_new(self):
+    def after_new_model(self):
         '''Override to add functionality.'''
         pass
 
-    def before_update(self):
+    def before_update_model(self):
         '''Override to add functionality.'''
         pass
 
-    def after_update(self):
+    def after_update_model(self):
         '''Override to add functionality.'''
         pass
 
-    def before_delete(self):
+    def before_delete_model(self):
         '''Override to add functionality.'''
         pass
 
-    def after_delete(self):
+    def after_delete_model(self):
         '''Override to add functionality.'''
         pass
 
-    def before_save(self):
+    def before_save_model(self):
         '''Override to add functionality.'''
         pass
 
-    def after_save(self):
+    def after_save_model(self):
         '''Override to add functionality.'''
         pass
