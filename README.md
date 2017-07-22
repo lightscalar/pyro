@@ -358,6 +358,10 @@ summarizes the available model hooks.
 |-------------|-------------|
 | `before_create_model` | Called after the model has been instantiated, but before it's committed to the database.|
 | `after_create_model` | Called after the model has been committed to the database. |
+| `before_update_model` | Called before the model is updated.|
+| `after_update_model` | Called after the model is updated. |
+| `before_delete_model` | Called before the model is deleted.|
+| `after_delete_model` | Called after the model is deleted. |
 
 
 
