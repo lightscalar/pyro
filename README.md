@@ -301,7 +301,7 @@ can do this in Python using the excellent Python library
 
 ```python
 import requests
-requests.post('http://localhost:5000/users', data={'name': 'Matthew', 'age': 41})
+requests.post('http://localhost:5000/users', json={'name': 'Matthew', 'age': 41})
 ```
 
 Pyro routes this request to the appropriate action, creates a new `User`
