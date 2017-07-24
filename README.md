@@ -358,15 +358,20 @@ summarizes the available model hooks.
 |-------------|-------------|
 | `before_create_model` | Called after the model has been instantiated, but before it's committed to the database.|
 | `after_create_model` | Called after the model has been committed to the database.|
-| `before_update_model` | Called before the model is updated.|
-| `after_update_model` | Called after the model is updated.|
+| `before_update_model` | Called before an existing  model is updated.|
+| `after_update_model` | Called after an existing model is updated.|
 | `before_save_model` | Called before the model is saved — either via creation or update.|
 | `after_save_model` | Called after the model is saved — either via creation or update.|
 | `before_delete_model` | Called before the model is deleted.|
 | `after_delete_model` | Called after the model is deleted.|
 
-
-
 Will all of this scale to super complex applications? Probably not. Pyro is
-better suited to getting something up and running quickly, rather than
-providing and excellent platform for re-implementing Facebook.
+better suited to getting a prototype up and running quickly, rather than
+providing a stable platform for re-implementing Facebook.
+
+### Action Hooks
+
+The other type of hook available are *action hooks*. These allow you to hook 
+into API actions like `index`, `show`,  and `create`. As with the model hooks,
+you can hook into the actions either before or after they do their job. This 
+allows you to easily implement things like server side validations. 
