@@ -365,13 +365,30 @@ summarizes the available model hooks.
 | `before_delete_model` | Called before the model is deleted.|
 | `after_delete_model` | Called after the model is deleted.|
 
-Will all of this scale to super complex applications? Probably not. Pyro is
-better suited to getting a prototype up and running quickly, rather than
-providing a stable platform for re-implementing Facebook.
+Inside a model hook you have access to the `self` instance, which allows you
+access to all of the usual model capabilities, database access, *etc*.
 
 ### Action Hooks
 
 The other type of hook available are *action hooks*. These allow you to hook 
 into API actions like `index`, `show`,  and `create`. As with the model hooks,
 you can hook into the actions either before or after they do their job. This 
-allows you to easily implement things like server side validations. 
+allows you to easily implement things like server side validations. You declare
+action hooks a little differently, as static methods on the corresponding 
+Model class. For example, support we wanted to hook into the create action
+to validate the presence of an email field before we commit the object to the
+database. Such a task could be done in a model hook, but here we can 
+modify the http response, the response codes, and send a sensible error
+message back to the user.
+
+```python
+User(Pyro):
+
+@staticmethod
+def before_create(params):
+    if 'email' not in params:
+        params['status_code'] = 406
+        params['resp'] = {'errors' = ['Must supply a valid email address.']}
+```
+
+        

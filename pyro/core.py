@@ -1,5 +1,6 @@
 from ipdb import set_trace as debug
 from flask import jsonify, request
+from datetime import datetime
 from pyro.database import *
 from pyro.utils import *
 
@@ -110,6 +111,9 @@ class Pyro(object, metaclass=PyroMeta):
         '''List all resources.'''
         params = assemble_params(cls, 'index', resource_id, request)
         cls.before_index(params) # before hook
+        if params['status_code'] > 399:
+            # Error detected. EJECT! EJECT!
+            return (jsonify(params['response']), params[status_code], {})
         if resource_id: # a nested resource!
             query = dict([(cls._parent._foreign_key(), ObjectId(resource_id))])
             cls._docs = cls.find_where(query)
@@ -127,11 +131,13 @@ class Pyro(object, metaclass=PyroMeta):
         if resource_id is not None: # nested create!
             parent = cls._parent.find_by_id(resource_id)
             cls._obj = cls.create(request.json, parent)
+            params['resp'] = cls._to_response(cls._obj._doc)
         else:
             cls._obj = cls.create(request.json)
+            params['resp'] = cls._to_response(cls._obj._doc)
         params[cls._singular_name] = cls._obj
         cls.after_create(params) # after hook
-        return cls._to_response(cls._obj._doc)
+        return (params['resp'], params['status_code'], {})
 
     @classmethod
     def _show(cls, resource_id):
@@ -140,14 +146,15 @@ class Pyro(object, metaclass=PyroMeta):
         cls.before_show(params) # before hook
         cls._obj = cls.find_by_id(resource_id)
         if cls._obj:
-            resp = cls._to_response(cls._obj._doc)
+            params['resp'] = cls._to_response(cls._obj._doc)
             params[cls._singular_name] = cls._obj
             params['status_code'] = 200
         else:
             resp = jsonify({})
             params['status_code'] = 404
+            params['resp'] = resp
         cls.after_show(params) # after hook
-        return (resp, params['status_code'], {})
+        return (params['resp'], params['status_code'], {})
 
     @classmethod
     def _destroy(cls, resource_id):
@@ -156,13 +163,15 @@ class Pyro(object, metaclass=PyroMeta):
         cls.before_destroy(params) # before hook
         cls._obj = cls.find_by_id(resource_id)
         if cls._obj:
+            params['resp'] = jsonify({})
             params[cls._obj._singular_name] = cls._obj
             cls._obj.delete()
             params['status_code'] = 200
         else:
+            params['resp'] = jsonify({})
             params['status_code'] = 404
         cls.after_destroy(params) # after hook
-        return (jsonify({}), params['status_code'], {})
+        return (params['resp'], params['status_code'], {})
 
     @classmethod
     def _update(cls, resource_id):
@@ -173,13 +182,14 @@ class Pyro(object, metaclass=PyroMeta):
         if cls._obj:
             cls._obj.__dict__.update(request.json)
             cls._obj.save()
-            resp = cls._to_response(cls._doc)
+            params['resp'] = cls._to_response(cls._doc)
             params[cls._obj._singular_name] = cls._obj
             params['status_code'] = status_code = 200
         else:
+            params['resp'] = jsonify({})
             params['status_code'] = status_code = 404
         cls.after_update(params) # after hook
-        return (resp, params['status_code'], {})
+        return (params['resp'], params['status_code'], {})
     # -------------- END CONTROLLER METHODS --------------------------
 
     # -------------- HOOK METHODS ------------------------------------
@@ -346,6 +356,8 @@ class Pyro(object, metaclass=PyroMeta):
     def _save_new_doc(self):
         '''Save new document to the database.'''
         self.before_save_model() # before hook
+        self._doc['createdAt'] = str(datetime.now())
+        self._doc['updatedAt'] = str(datetime.now())
         response = self._db[self._plural_name].insert_one(self._doc)
         self._doc['_id'] = response.inserted_id
         self.__dict__.update(self._doc)
@@ -354,6 +366,7 @@ class Pyro(object, metaclass=PyroMeta):
     def _update_existing_doc(self):
         '''Update an existing document.'''
         self.before_update_model() # before hook
+        self._doc['updatedAt'] = str(datetime.now())
         self._doc.update(self.__dict__)
         self._doc = clean_document(self._doc)
         update_document(self._doc, self._db[self._plural_name])

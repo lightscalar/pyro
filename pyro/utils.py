@@ -124,6 +124,7 @@ def assemble_params(Class, action, resource_id, request):
     params['action'] = action
     params['request_data'] = request.json
     params['request'] = request
+    params['status_code'] = 200 # default
     params['class'] = Class
     return params
 
