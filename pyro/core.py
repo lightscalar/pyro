@@ -94,7 +94,7 @@ class Pyro(object, metaclass=PyroMeta):
             routes[route_name] = {'route': route, 'methods': methods,\
                 'callback': callback}
             # create
-            route_name = '{:s}.{:s}.index'.format(cls._singular_name,\
+            route_name = '{:s}.{:s}.post'.format(cls._singular_name,\
                 child._plural_name)
             route = '/{:s}/<resource_id>/{:s}'.format(cls._singular_name,\
                 child._plural_name)
@@ -102,7 +102,6 @@ class Pyro(object, metaclass=PyroMeta):
             callback = child._create
             routes[route_name] = {'route': route, 'methods': methods,\
                 'callback': callback}
-
         return routes
 
     # -------------- CONTROLLER METHODS -----------------------------
