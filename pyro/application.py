@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, Response
-from flask_cors import *
+from flask_cors import CORS, cross_origin
 from ipdb import set_trace as debug
 
 

@@ -108,6 +108,13 @@ class Pyro(object, metaclass=PyroMeta):
     @classmethod
     def _index(cls, resource_id=None):
         '''List all resources.'''
+        # If we pass query, answer the query rather than all resources.
+        the_query = request.query_string.decode().split('=')
+        if len(the_query) == 2:
+            q_ = {the_query[0]: the_query[1]}
+            results = cls.find_where(q_)
+            return cls._to_response(results)
+
         params = assemble_params(cls, 'index', resource_id, request)
         cls.before_index(params) # before hook
         if params['status_code'] > 399:
@@ -129,13 +136,28 @@ class Pyro(object, metaclass=PyroMeta):
         cls.before_create(params) # before hook
         if resource_id is not None: # nested create!
             parent = cls._parent.find_by_id(resource_id)
-            cls._obj = cls.create(request.json, parent)
+            cls._obj = cls.create(deserialize(request.json), parent)
             params['resp'] = cls._to_response(cls._obj._doc)
         else:
-            cls._obj = cls.create(request.json)
+            cls._obj = cls.create(deserialize(request.json))
             params['resp'] = cls._to_response(cls._obj._doc)
         params[cls._singular_name] = cls._obj
         cls.after_create(params) # after hook
+        return (params['resp'], params['status_code'], {})
+
+    @classmethod
+    def _upsert(cls, resource_id=None):
+        '''Upsert a resource. Responds to a patch to the URL.'''
+        debug()
+        params = assemble_params(cls, 'upsert', resource_id, request)
+        data = deserialize(request.json)
+        # Attempt to find the resource using query.
+        matches = cls.find_where(data['query'])
+        if len(matches) == 0: # no matches
+            cls._obj = cls.create(data)
+            params['resp'] = cls._to_response(cls._obj._doc)
+        else:
+            params['resp'] = cls._to_response(matches[0])
         return (params['resp'], params['status_code'], {})
 
     @classmethod
@@ -179,7 +201,7 @@ class Pyro(object, metaclass=PyroMeta):
         cls.before_update(params) # before hook
         cls._obj = cls.find_by_id(resource_id)
         if cls._obj:
-            cls._obj.__dict__.update(request.json)
+            cls._obj.__dict__.update(deserialize(request.json))
             cls._obj.save()
             params['resp'] = cls._to_response(cls._doc)
             params[cls._obj._singular_name] = cls._obj
@@ -341,6 +363,9 @@ class Pyro(object, metaclass=PyroMeta):
     def save(self):
         '''Save the current document, if there is one.'''
         self._doc.update(self.__dict__)
+        if self.has_parent:
+            if self._parent._singular_name in self._doc:
+                del self._doc[self._parent._singular_name]
         if self.doc_exists:
             self._update_existing_doc()
         else:
@@ -368,6 +393,9 @@ class Pyro(object, metaclass=PyroMeta):
         self._doc['updatedAt'] = str(datetime.now())
         self._doc.update(self.__dict__)
         self._doc = clean_document(self._doc)
+        if self.has_parent:
+            if self._parent._singular_name in self._doc:
+                del self._doc[self._parent._singular_name]
         update_document(self._doc, self._db[self._plural_name])
         self.after_update_model() # after hook
 
